@@ -14,7 +14,7 @@
     command: mkdir /source
     ignore_errors: true
 
-# This playbook installs and configures all the items necessary for building out the demo's'
+# This playbook installs and configures all the items necessary for building out the demo's' 
   - name: remove the existing version of docker
     yum: name=docker state=absent
   - name: remove the existing version of docker
