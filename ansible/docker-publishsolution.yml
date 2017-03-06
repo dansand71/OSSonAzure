@@ -1,0 +1,83 @@
+---
+# This playbook builds the .NET Website & creates a container --> pushes to the private repo and then pulls it down
+- hosts: buildbox
+  remote_user: GBBOSSDemo
+
+  tasks: 
+  - name: Publish the site
+    command: dotnet publish
+    args:
+      chdir: /source/aspnet-core-linux
+
+   #delete existing container, Build, Tag and Publish
+  - name: Delete the existing container
+    command: docker image rm dansand71/aspnet-core-linux
+    become: true
+    ignore_errors: true
+
+  - name: Build the image
+    command: docker build -t dansand71/aspnet-core-linux .
+    become: true
+    args:
+      chdir: /source/aspnet-core-linux
+
+  - name: Tag the image
+    command: docker tag dansand71/aspnet-core-linux dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+    become: true
+
+  - name: Login to the Dansand Registry
+    command: docker login dansandregistry-microsoft.azurecr.io -u dansandregistry -p ==Z/+RFk=s9=qcCO+pWPfWFqAMpppZlD
+    become: true
+
+  - name: Push to the Dansand Registry
+    command: docker push dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+    become: true
+
+#  - name: Tag the image
+#    command: docker tag dansand71/aspnet-core-linux index.docker.io/dansand71/aspnet-core-linux
+#    become: true
+
+#  - name: Login to the Public Dansand71 Registry
+#    command: docker login index.docker.io -u dansand71 -p Rockstar42!
+#    become: true
+
+#  - name: Push to the Dansand Public Registry
+#    command: docker push index.docker.io/dansand71/aspnet-core-linux
+#    become: true
+
+- hosts: rhelrunners
+  remote_user: dansand
+  sudo : true 
+
+  tasks: 
+  - name: Log into private registry and force re-authorization
+    docker_login:
+      registry: dansandregistry-microsoft.azurecr.io
+      username: dansandregistry
+      password: ==Z/+RFk=s9=qcCO+pWPfWFqAMpppZlD
+      reauthorize: yes
+
+  - name: Kill the existing container
+    command: docker rm aspnet-core-linux -f
+    become: true
+    ignore_errors: true
+
+  - name: Pull the container
+    command: docker pull dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+    become: true
+
+  - name: Start the container
+    command: docker run -d -p 80:5000 --name=aspnet-core-linux dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+    become: true
+
+  - name: Kill the existing container
+    command: docker rm AppInsightMonitoring -f
+    become: true
+    ignore_errors: true
+
+  - name: Start the monitoring container for Application Insights
+    command: docker run -v /var/run/docker.sock:/docker.sock --name=AppInsightMonitoring -d microsoft/applicationinsights ikey=ab97398b-359e-4279-a819-88071a696de8 
+    become: true
+    ignore_errors: true
+
+

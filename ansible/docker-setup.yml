@@ -1,0 +1,49 @@
+---
+# This playbook installs docker on all the hosts
+- name: Install Docker
+  hosts: rhelrunners
+  remote_user: GBBOSSDemo
+  sudo : true 
+
+
+  tasks: 
+  - name: update YUM
+    yum: name=* state=latest
+
+  - name: remove the existing version of docker
+    yum: name=docker state=absent
+  - name: remove the existing version of docker
+    yum: name=docker-selinux state=absent
+  - name: remove the existing version of docker
+    yum: name=docker-selinux state=absent
+  - name: install the latest version of utils
+    yum: name=yum-utils update_cache=yes state=latest
+
+
+#  - name: Add docker repository
+#    yum_repository:
+#       name: docker
+#       description: docker YUM repo
+#       baseurl: https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+
+  - name: update newrepo
+    command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+  - name: update repo cache for the new repo
+    command: yum -q makecache fast
+
+  - name: install the latest version of Docker
+    yum: name=docker update_cache=yes state=latest
+
+  - name: Install PIP
+    easy_install:
+      name: pip
+      state: latest
+
+  - name: install docker-py
+    pip: name=docker-py version=1.9
+ 
+  - name: Start docker
+    service: 
+      name: docker 
+      state: running
+

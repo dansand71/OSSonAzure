@@ -1,0 +1,93 @@
+---
+# This playbook installs and configures all the items necessary for building out the demo's'
+- name: Install tools
+  hosts: buildbox
+  remote_user: GBBOSSDemo
+  sudo : true 
+
+
+  tasks: 
+  - name: update YUM
+    yum: name=* state=latest
+
+  - name: create directory for source files
+    command: mkdir /source
+
+# This playbook installs and configures all the items necessary for building out the demo's'
+  - name: remove the existing version of docker
+    yum: name=docker state=absent
+  - name: remove the existing version of docker
+    yum: name=docker-selinux state=absent
+  - name: remove the existing version of docker
+    yum: name=docker-selinux state=absent
+  - name: install the latest version of utils
+    yum: name=yum-utils update_cache=yes state=latest
+  - name: update newrepo
+    command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+  - name: update repo cache for the new repo
+    command: yum -q makecache fast
+  - name: install the latest version of Docker
+    yum: name=docker update_cache=yes state=latest
+  - name: Install PIP
+    easy_install:
+      name: pip
+      state: latest
+  - name: install docker-py
+    pip: name=docker-py version=1.9
+  - name: Start docker
+    service: 
+      name: docker 
+      state: runnin
+      
+# Install XRDP and TigerVNC - this is for RDP access and demo - http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-xrdp-on-centos-7-rhel-7.html
+- name: install epel for demo purposes
+    command: rpm -Uvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+- name: install nux for demo purposes
+    command: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
+- name: install XRDP for demo purposes
+    yum: name=xrdp state=latest
+- name: install TigerVNC for demo purposes
+    yum: name=TigerVNC state=latest
+- name: configure XRDP for start
+    command: systemctl enable xrdp.service
+
+
+# Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
+- name: download the dotnet bits
+    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835019
+    args:
+      chdir: /source
+- name: install .net
+    command: mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
+- name: configure .net
+    command: ln -s /opt/dotnet/dotnet /usr/local/bin
+
+# Install MS Visual Studio Code - https://code.visualstudio.com/docs/setup/linux
+- name: install vs code keys
+    command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+- name: update the repo for yum install
+    command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+- name: update the Yum cache
+    command: yum check-update
+- name: install vs code for demo purposes
+    yum: name=code state=latest
+
+# Install the latest version of the Azure CLI - https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+- name: Install the CLI of azure
+    command: curl -L https://aka.ms/InstallAzureCli | bash
+    args:
+      chdir: /source
+
+# Install additional tools
+- name: install git
+    yum: name=git state=latest
+- name: install autoconf
+    yum: name=autoconf state=latest
+- name: install automake
+    yum: name=automake state=latest
+
+# Install desktop tools
+- name: Gnome
+    command: yum -y groupinstall "GNOME Desktop" "Graphical Administration Tools"
+
+
