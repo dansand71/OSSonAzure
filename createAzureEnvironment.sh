@@ -29,12 +29,17 @@ az network nsg create --resource-group kubernetes-demo --name NSG-k8sdemo --loca
 
 echo ""
 echo "create network rules"
+
 echo 'Allow RDP inbound to Utility'
 az network nsg rule create --resource-group utility --nsg-name NSG-utility --name rdp-rule --access Allow --protocol Tcp --direction Inbound --priority 100 --source-address-prefix Internet --source-port-range "*" --destination-address-prefix "*" --destination-port-range 3389
 echo 'Allow SSH inbound to Utility'
 az network nsg rule create --resource-group utility --nsg-name NSG-utility --name ssh-rule --access Allow --protocol Tcp --direction Inbound --priority 110 --source-address-prefix Internet --source-port-range "*" --destination-address-prefix "*" --destination-port-range 22
+
 echo 'Allow SSH inbound to docker-demo'
 az network nsg rule create --resource-group docker-demo --nsg-name NSG-dockerdemo --name ssh-rule --access Allow --protocol Tcp --direction Inbound --priority 100 --source-address-prefix Internet --source-port-range "*" --destination-address-prefix "*" --destination-port-range 22
+echo 'Allow HTTP inbound to docker-demo'
+az network nsg rule create --resource-group docker-demo --nsg-name NSG-dockerdemo --name http-rule --access Allow --protocol Tcp --direction Inbound --priority 120 --source-address-prefix Internet --source-port-range "*" --destination-address-prefix "*" --destination-port-range 80
+
 echo 'Allow SSH inbound to kubernetes-demo'
 az network nsg rule create --resource-group kubernetes-demo --nsg-name NSG-k8sdemo --name ssh-rule --access Allow --protocol Tcp --direction Inbound --priority 100 --source-address-prefix Internet --source-port-range "*" --destination-address-prefix "*" --destination-port-range 22
 

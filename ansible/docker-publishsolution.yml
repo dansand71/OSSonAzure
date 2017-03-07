@@ -22,6 +22,14 @@
     command: docker image rm gbbossdemo/aspnet-core-linux
     become: true
     ignore_errors: true
+  - name: Delete the existing DOCKER image  - Save Space
+    command: docker rmi gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux -f
+    become: true
+    ignore_errors: true
+  - name: Delete the existing DOCKER registry image  - Save Space
+    command: docker rmi gbbossdemo/aspnet-core-linux -f
+    become: true
+    ignore_errors: true
 
   - name: Build the DOCKER image
     command: docker build -t gbbossdemo/aspnet-core-linux .
