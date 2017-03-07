@@ -10,10 +10,6 @@
   - name: update YUM
     yum: name=* state=latest
 
-  - name: create directory for source files
-    command: mkdir /source
-    ignore_errors: true
-
 # This playbook installs and configures all the items necessary for building out the demo's'  x3
   - name: remove the existing version of docker
     yum: name=docker state=absent

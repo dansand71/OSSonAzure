@@ -49,17 +49,7 @@
     command: docker push gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
-#  - name: Tag the image
-#    command: docker tag dansand71/aspnet-core-linux index.docker.io/dansand71/aspnet-core-linux
-#    become: true
-
-#  - name: Login to the Public Dansand71 Registry
-#    command: docker login index.docker.io -u dansand71 -p Rockstar42!
-#    become: true
-
-#  - name: Push to the Dansand Public Registry
-#    command: docker push index.docker.io/dansand71/aspnet-core-linux
-#    become: true
+#Now deploy the containers on the worker nodes
 
 - hosts: rhelrunners
   remote_user: GBBOSSDemo

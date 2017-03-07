@@ -19,7 +19,7 @@ az group create --name ossdemo-utility --location eastus
 echo ""
 echo "Create Utility Storage account - you may need to change this in case there is a conflict"
 echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
-az storage account create -l eastus -n gbbossutilitystorage -g ossdemo-utility --sku Standard_LRS
+az storage account create -l eastus -n [VAR1]gbbossutilitystorage -g ossdemo-utility --sku Standard_LRS
 
 echo ""
 echo 'Network Security Group for utility Resource Group'
@@ -53,11 +53,11 @@ echo ""
 echo "Create Azure Registry - this will be used to host the docker containers.  Working on a bug where this isnt allowed inside my VS Enterprise Subscription."
 echo " navigate to the Utility resource group.  Name the registry - gbbossdemoregistry"
 az component update --add acr
-az acr create -n gbbossdemoregistry -g ossdemo-utility -l eastus --storage-account-name gbbossutilitystorage --admin-enabled true
+az acr create -n [VAR1]gbbossdemoregistry -g ossdemo-utility -l eastus --storage-account-name [VAR1]gbbossutilitystorage --admin-enabled true
 
 echo ""
 echo 'Create CENTOS utility machine for RDP, Container BUILD and administration demos'
-az vm create -g 'ossdemo-utility' -n centos-utility --public-ip-address-dns-name 'ossdemo-centos-utility' --os-disk-name 'centos-demo-disk' \
+az vm create -g 'ossdemo-utility' -n centos-utility-[VAR1] --public-ip-address-dns-name 'ossdemo-centos-utility' --os-disk-name 'centos-demo-disk' \
         --image "OpenLogic:CentOS:7.2:latest" --os-type linux --nsg 'NSG-ossdemo-utility'  --storage-sku 'Premium_LRS' --size Standard_DS2_v2 --admin-username GBBOSSDemo \
         --no-wait --ssh-key-value 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
 
@@ -65,4 +65,4 @@ az vm create -g 'ossdemo-utility' -n centos-utility --public-ip-address-dns-name
 echo ""
 echo 'Create Kubernetes cluster for Demo 1'
 az acs kubernetes install-cli
-az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=ossdemo-k8s-cluster --dns-prefix=ossdemo-k8s --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
+az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=ossdemo-k8s-cluster-[VAR1] --dns-prefix=ossdemo-k8s-[VAR1] --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
