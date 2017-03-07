@@ -15,6 +15,11 @@ echo 'create utility resource group'
 az group create --name utility --location eastus
 
 echo ""
+echo "Create Utility Storage account - you may need to change this in case there is a conflict"
+echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
+az storage account create -l eastus -n gbbossutilitystorage -g utility --sku Standard_LRS
+
+echo ""
 echo 'Network Security Group for utility Resource Group'
 az network nsg create --resource-group utility --name NSG-utility --location eastus
 echo 'Network Security Group for docker-demo Resource Group'
@@ -36,6 +41,12 @@ az network nsg rule create --resource-group kubernetes-demo --nsg-name NSG-k8sde
 echo ""
 echo 'Create Availability set for docker-demo environment'
 az vm availability-set create -n docker-demo-availabilityset -g docker-demo --platform-update-domain-count 5 --platform-fault-domain-count 2
+
+echo ""
+echo "Create Azure Registry - this will be used to host the docker containers.  Working on a bug where this isnt allowed inside my VS Enterprise Subscription."
+echo " navigate to the Utility resource group.  Name the registry - gbbossdemoregistry"
+sudo az component update --add acr
+az acr create -n gbbossdemoregistry -g utility -l eastus -s gbbossutilitystorage
 
 echo ""
 echo 'Create CENTOS utility machine'

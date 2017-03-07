@@ -100,6 +100,18 @@
     yum: name=autoconf state=latest
   - name: install automake
     yum: name=automake state=latest
+  
+# Install .NET Publishing Tools
+  - name: install npm for .NET Publishing
+    yum: name=npm state=latest
+  - name: install bower
+    command: npm install bower -g
+  - name: install gulp
+    command: npm install gulp -g
+
+# Install developer tools
+  - name: Developer Tools
+    command: yum -y groupinstall "Development Tools"
 
 # Install desktop tools
   - name: Gnome

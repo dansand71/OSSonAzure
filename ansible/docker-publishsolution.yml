@@ -4,33 +4,41 @@
   remote_user: GBBOSSDemo
 
   tasks: 
+  - name: Restore the requirements
+    command: dotnet restore
+    args:
+      chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
+  - name: .NET BUILD
+    command: dotnet build
+    args:
+      chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
   - name: Publish the site
     command: dotnet publish
     args:
       chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
    #delete existing container, Build, Tag and Publish
-  - name: Delete the existing container
-    command: docker image rm dansand71/aspnet-core-linux
+  - name: Delete the existing DOCKER container
+    command: docker image rm gbbossdemo/aspnet-core-linux
     become: true
     ignore_errors: true
 
-  - name: Build the image
-    command: docker build -t dansand71/aspnet-core-linux .
+  - name: Build the DOCKER image
+    command: docker build -t gbbossdemo/aspnet-core-linux .
     become: true
     args:
       chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
-  - name: Tag the image
-    command: docker tag dansand71/aspnet-core-linux dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+  - name: Tag the DOCKER image
+    command: docker tag gbbossdemo/aspnet-core-linux gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
-  - name: Login to the Dansand Registry
-    command: docker login dansandregistry-microsoft.azurecr.io -u dansandregistry -p ==Z/+RFk=s9=qcCO+pWPfWFqAMpppZlD
+  - name: Login to the Azure Private Registry
+    command: docker login gbbossdemoregistry-microsoft.azurecr.io -u gbbossdemoregistry -p 4+=zpF4tpGL/pdKYhVXMy+b5jHX35P25
     become: true
 
-  - name: Push to the Dansand Registry
-    command: docker push dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+  - name: Push to the Azure Private Registry
+    command: docker push gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
 #  - name: Tag the image
@@ -46,31 +54,36 @@
 #    become: true
 
 - hosts: rhelrunners
-  remote_user: dansand
+  remote_user: GBBOSSDemo
   sudo : true 
 
   tasks: 
   - name: Log into private registry and force re-authorization
     docker_login:
-      registry: dansandregistry-microsoft.azurecr.io
-      username: dansandregistry
-      password: ==Z/+RFk=s9=qcCO+pWPfWFqAMpppZlD
+      registry: gbbossdemoregistry-microsoft.azurecr.io
+      username: gbbossdemoregistry
+      password: 4+=zpF4tpGL/pdKYhVXMy+b5jHX35P25
       reauthorize: yes
 
-  - name: Kill the existing container
+  - name: Kill the existing DOCKER container
     command: docker rm aspnet-core-linux -f
     become: true
     ignore_errors: true
 
-  - name: Pull the container
-    command: docker pull dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+  - name: Kill the existing DOCKER Image
+    command: docker rmi aspnet-core-linux -f
+    become: true
+    ignore_errors: true
+
+  - name: Pull the new DOCKER container
+    command: docker pull gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
-  - name: Start the container
-    command: docker run -d -p 80:5000 --name=aspnet-core-linux dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
+  - name: Start the DOCKER container
+    command: docker run -d -p 80:5000 --name=aspnet-core-linux gbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
-  - name: Kill the existing container
+  - name: Kill the existing AppInsights DOCKER container
     command: docker rm AppInsightMonitoring -f
     become: true
     ignore_errors: true
