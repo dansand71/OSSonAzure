@@ -3,7 +3,7 @@ echo "Login to Azure"
 az login
 
 echo 'Use a particular subscription'
-az account set --subscription "Visual Studio Enterprise"
+az account set --subscription "Microsoft Azure Internal Subscription - you should modify this for your environment"
 
 echo 'Create docker-demo resource group'
 az group create --name ossdemo-docker --location eastus

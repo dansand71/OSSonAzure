@@ -1,6 +1,6 @@
 #!/bin/bash
-echo 'Use a particular subscription'
-az account set --subscription "Visual Studio Enterprise"
+echo 'Use a particular subscription - you should modify this for your scenrio'
+az account set --subscription "Microsoft Azure Internal Subscription"
 
 echo 'Delete docker-demo resource group'
 az group delete --name ossdemo-docker -y --no-wait
