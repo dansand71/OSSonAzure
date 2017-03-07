@@ -51,7 +51,7 @@
     yum: name=tigervnc state=latest
   - name: Start xrdp
     service: 
-      name: XRDP 
+      name: xrdp 
       state: running
       enabled: yes
 
