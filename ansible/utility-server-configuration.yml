@@ -13,6 +13,8 @@
 # This playbook installs and configures all the items necessary for building out the demo's'  x3
   - name: remove the existing version of docker
     yum: name=docker state=absent
+  - name: remove the existing version of docker-common
+    yum: name=docker-common state=absent
   - name: remove the existing selinux version of docker
     yum: name=docker-selinux state=absent
   - name: install the latest version of utils

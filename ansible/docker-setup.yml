@@ -15,6 +15,8 @@
     yum: name=docker state=absent
   - name: remove the existing selinux version of docker
     yum: name=docker-selinux state=absent
+  - name: remove the existing version of docker-common
+    yum: name=docker-common state=absent
   - name: install the latest version of utils
     yum: name=yum-utils update_cache=yes state=latest
   - name: update newrepo for docker
@@ -23,7 +25,6 @@
     command: yum -q makecache fast
   - name: install the latest version of Docker
     yum: name=docker-ce update_cache=yes state=latest
-  
   
   - name: enable the extras repo and install epel
     command: yum --enablerepo=extras install epel-release -y
