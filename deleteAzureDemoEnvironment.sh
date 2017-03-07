@@ -3,14 +3,14 @@ echo 'Use a particular subscription'
 az account set --subscription "Visual Studio Enterprise"
 
 echo 'Delete docker-demo resource group'
-az group delete --name ossdemo-docker
+az group delete --name ossdemo-docker -y --no-wait
 
 echo 'Delete docker-linux-paas-demo resource group'
-az group delete --name ossdemo-docker-linux-paas 
+az group delete --name ossdemo-docker-linux-paas -y --no-wait
 
 echo 'Delete kubernetes-demo resource group'
-az group delete --name ossdemo-kubernetes
+az group delete --name ossdemo-kubernetes -y --no-wait
 
 echo 'Delete utility resource group'
-az group delete --name ossdemo-utility
+az group delete --name ossdemo-utility -y --no-wait
 

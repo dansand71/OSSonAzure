@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "Login to Azure"
+az login
+
 echo 'Use a particular subscription'
 az account set --subscription "Visual Studio Enterprise"
 
@@ -50,8 +53,8 @@ az vm availability-set create -n ossdemo-docker-availabilityset -g ossdemo-docke
 echo ""
 echo "Create Azure Registry - this will be used to host the docker containers.  Working on a bug where this isnt allowed inside my VS Enterprise Subscription."
 echo " navigate to the Utility resource group.  Name the registry - gbbossdemoregistry"
-sudo az component update --add acr
-az acr create -n gbbossdemoregistry -g ossdemo-utility -l eastus -s gbbossutilitystorage
+az component update --add acr
+az acr create -n gbbossdemoregistry -g ossdemo-utility -l eastus --storage-account-name gbbossutilitystorage --admin-enabled true
 
 echo ""
 echo 'Create CENTOS utility machine for RDP, Container BUILD and administration demos'
