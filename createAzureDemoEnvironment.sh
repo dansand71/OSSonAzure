@@ -1,9 +1,8 @@
 #!/bin/bash
-echo "Login to Azure"
-az login
+echo "Please be sure to login to Azure"
 
-echo 'Use a particular subscription'
-az account set --subscription "Microsoft Azure Internal Subscription - you should modify this for your environment"
+echo 'Use a particular subscription  - you should modify this for your environment'
+az account set --subscription "Microsoft Azure Internal Subscription"
 
 echo 'Create docker-demo resource group'
 az group create --name ossdemo-docker --location eastus
