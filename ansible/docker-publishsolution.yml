@@ -23,7 +23,7 @@
     become: true
     ignore_errors: true
   - name: Delete the existing DOCKER image  - Save Space
-    command: docker rmi REPLACEMEgbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux -f
+    command: docker rmi REPLACEMEregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux -f
     become: true
     ignore_errors: true
   - name: Delete the existing DOCKER registry image  - Save Space
@@ -38,15 +38,15 @@
       chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
   - name: Tag the DOCKER image
-    command: docker tag gbbossdemo/aspnet-core-linux REPLACEMEgbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
+    command: docker tag gbbossdemo/aspnet-core-linux REPLACEMEregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Login to the Azure Private Registry
-    command: docker login REPLACEMEgbbossdemoregistry-microsoft.azurecr.io -u REPLACEMEgbbossdemoregistry -p REPLACEREGISTRYPASSWORD
+    command: docker login REPLACEMEregistry-microsoft.azurecr.io -u REPLACEMEregistry -p REPLACEREGISTRYPASSWORD
     become: true
 
   - name: Push to the Azure Private Registry
-    command: docker push REPLACEMEgbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
+    command: docker push REPLACEMEregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
 #Now deploy the containers on the worker nodes
@@ -58,8 +58,8 @@
   tasks: 
   - name: Log into private registry and force re-authorization
     docker_login:
-      registry: REPLACEMEgbbossdemoregistry-microsoft.azurecr.io
-      username: REPLACEMEgbbossdemoregistry
+      registry: REPLACEMEregistry-microsoft.azurecr.io
+      username: REPLACEMEregistry
       password: REPLACEREGISTRYPASSWORD
       reauthorize: yes
 
@@ -74,11 +74,11 @@
     ignore_errors: true
 
   - name: Pull the new DOCKER container
-    command: docker pull REPLACEMEgbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
+    command: docker pull REPLACEMEregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Start the DOCKER container
-    command: docker run -d -p 80:5000 --name=aspnet-core-linux REPLACEMEgbbossdemoregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
+    command: docker run -d -p 80:5000 --name=aspnet-core-linux REPLACEMEregistry-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Kill the existing AppInsights DOCKER container

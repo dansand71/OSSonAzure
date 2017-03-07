@@ -19,7 +19,7 @@ az group create --name ossdemo-utility --location eastus
 echo ""
 echo "Create Utility Storage account - you may need to change this in case there is a conflict"
 echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
-az storage account create -l eastus -n REPLACEMEgbbossutilitystorage -g ossdemo-utility --sku Standard_LRS
+az storage account create -l eastus -n REPLACEMEstorage -g ossdemo-utility --sku Standard_LRS
 
 echo ""
 echo 'Network Security Group for utility Resource Group'
@@ -53,7 +53,7 @@ echo ""
 echo "Create Azure Registry - this will be used to host the docker containers.  Working on a bug where this isnt allowed inside my VS Enterprise Subscription."
 echo " navigate to the Utility resource group.  Name the registry - gbbossdemoregistry"
 az component update --add acr
-az acr create -n REPLACEMEgbbossdemoregistry -g ossdemo-utility -l eastus --storage-account-name REPLACEMEgbbossutilitystorage --admin-enabled true
+az acr create -n REPLACEMEregistry -g ossdemo-utility -l eastus --storage-account-name REPLACEMEstorage --admin-enabled true
 
 echo ""
 echo 'Create CENTOS utility machine for RDP, Container BUILD and administration demos'
@@ -65,4 +65,4 @@ az vm create -g 'ossdemo-utility' -n centos-utility-REPLACEME --public-ip-addres
 echo ""
 echo 'Create Kubernetes cluster for Demo 1'
 az acs kubernetes install-cli
-az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=ossdemo-k8s-cluster-REPLACEME --dns-prefix=ossdemo-k8s-REPLACEME --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
+az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=k8s-cluster-REPLACEME --dns-prefix=k8s-REPLACEME --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
