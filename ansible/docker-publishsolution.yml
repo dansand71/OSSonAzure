@@ -7,7 +7,7 @@
   - name: Publish the site
     command: dotnet publish
     args:
-      chdir: /source/aspnet-core-linux
+      chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
    #delete existing container, Build, Tag and Publish
   - name: Delete the existing container
@@ -19,7 +19,7 @@
     command: docker build -t dansand71/aspnet-core-linux .
     become: true
     args:
-      chdir: /source/aspnet-core-linux
+      chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
   - name: Tag the image
     command: docker tag dansand71/aspnet-core-linux dansandregistry-microsoft.azurecr.io/dansand71/aspnet-core-linux
@@ -79,5 +79,3 @@
     command: docker run -v /var/run/docker.sock:/docker.sock --name=AppInsightMonitoring -d microsoft/applicationinsights ikey=ab97398b-359e-4279-a819-88071a696de8 
     become: true
     ignore_errors: true
-
-
