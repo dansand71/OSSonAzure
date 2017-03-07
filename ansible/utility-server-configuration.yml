@@ -18,11 +18,13 @@
   - name: install the latest version of utils
     yum: name=yum-utils update_cache=yes state=latest
   - name: update newrepo for docker
-    command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+    command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   - name: update repo cache for the new repo
     command: yum -q makecache fast
   - name: install the latest version of Docker
-    yum: name=docker update_cache=yes state=latest
+    yum: name=docker-ce update_cache=yes state=latest
+  - name: enable the extras repo and install epel
+    command: yum --enablerepo=extras install epel-release -y
   - name: Install PIP
     easy_install:
       name: pip
@@ -33,6 +35,7 @@
     service: 
       name: docker 
       state: running
+      enabled: yes
       
 # Install XRDP and TigerVNC - this is for RDP access and demo - http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-xrdp-on-centos-7-rhel-7.html
   - name: download epel
@@ -44,11 +47,11 @@
     yum: name=xrdp state=latest
   - name: install TigerVNC for demo purposes
     yum: name=tigervnc state=latest
-  - name: configure XRDP for start
-    command: systemctl enable xrdp.service
-  - name: start XRDP
-    command: systemctl start xrdp
-
+  - name: Start xrdp
+    service: 
+      name: XRDP 
+      state: running
+      enabled: yes
 
 # Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
   - name: download the dotnet bits
