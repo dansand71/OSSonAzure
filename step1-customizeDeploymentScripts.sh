@@ -14,9 +14,9 @@ if [ -f /etc/lsb-release ]; then
   sudo apt-get install git
 fi
 
-sudo mkdir /source
-cd /source
-sudo rm -rf /source/OSSonAzure
+sudo mkdir source
+cd ./source
+sudo rm -rf ./source/OSSonAzure
 sudo git clone https://github.com/dansand71/OSSonAzure
 
 #CHANGE your VALUES HERE
