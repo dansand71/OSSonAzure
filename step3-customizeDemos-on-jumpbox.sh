@@ -39,4 +39,5 @@ sudo yum -y install ansible
 sudo chmod +x /source/OSSonAzure/step3-customizeDemos-on-jumpbox.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/configK8S.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/refreshK8S.sh
+sudo chmod +x /source/OSSonAzure/kubernetes/deploy.sh
 sudo chmod +x /source/OSSonAzure/azscripts/newVM.sh
