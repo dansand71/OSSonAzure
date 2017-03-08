@@ -7,33 +7,26 @@
 
 
   tasks: 
-  - name: update YUM
-    yum: name=* state=latest
+#  - name: update YUM
+#    yum: name=* state=latest
 
-   # This playbook installs and configures all the items necessary for building out the demo's'  x3
-  - name: remove the existing version of docker
-    yum: name=docker state=absent
-  - name: remove the existing selinux version of docker
-    yum: name=docker-selinux state=absent
-  - name: remove the existing version of docker-common
-    yum: name=docker-common state=absent
-  - name: install the latest version of utils
-    yum: name=yum-utils update_cache=yes state=latest
-  - name: update newrepo for docker
-    command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  - name: update repo cache for the new repo
-    command: yum -q makecache fast
-  - name: install the latest version of Docker
-    yum: name=docker-ce update_cache=yes state=latest
+   # This playbook installs and configures all the items necessary for building out the demo's'
+   name: install docker
+    yum: name=docker state=latest
   
   - name: enable the extras repo and install epel
     command: yum --enablerepo=extras install epel-release -y
+  
   - name: install the latest version of PIP
     yum: name=python-pip state=latest
+  
   - name: install docker-py
     pip: name=docker-py version=1.9
+  
   - name: Start docker
     service: 
       name: docker 
       state: running
       enabled: yes
+
+#Be Sure to call the OMS-Deploy playbook as well

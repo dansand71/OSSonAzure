@@ -10,17 +10,13 @@
         dest: /etc/onboard_agent.sh
         
     - name: Install and Configure Agent
-      shell: sudo sh /etc/onboard_agent.sh /
-            -w 8db382ab-1870-4ae0-bc1d-d258c4b947a4 /
-            -s l1X4hDSPK4HtdQ/OdqnqvWRdScgymqgUGrKCEshJMrT6ODaqiSAc3e98A1Fu0mP/7hYAdUA9xciutTnNdI8BfQ== /
-            -d opinsights.azure.com
+      shell: sudo sh /etc/onboard_agent.sh -w REPLACE-OMS-WORKSPACE -s REPLACE-OMS-SUBSCRIPTIONID -d opinsights.azure.com
 
-
-#    - name: Get Service Map
-#      get_url: 
-#        url: https://aka.ms/dependencyagentlinux/InstallDependencyAgent-Linux64.bin
-#        dest: /etc/InstallDependencyAgent-Linux64.bin
-        
-#    - name: Install and Configure
-#      shell: sudo sh /etc/InstallDependencyAgent-Linux64.bin
+    - name: Get OMS Service Map
+      get_url: 
+        url: https://aka.ms/dependencyagentlinux/InstallDependencyAgent-Linux64.bin
+        dest: /etc/InstallDependencyAgent-Linux64.bin
+       
+    - name: Install and Configure OMS Service Mapping Tool
+      shell: sudo sh /etc/InstallDependencyAgent-Linux64.bin
 

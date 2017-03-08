@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aspnet-core-linux-deployment
+spec:
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      # unlike pod-nginx.yaml, the name is not included in the meta data as a unique name is
+      # generated from the deployment name
+      labels:
+        app: aspnet-core-linux
+    spec:
+      containers:
+      - name: aspnet-core-linux
+        image: REPLACE-REGISTRY-NAME-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: ossdemoRegistryKey
