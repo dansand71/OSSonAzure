@@ -34,3 +34,9 @@ sudo grep -rl REPLACE-OMS-SUBSCRIPTIONID ./ | sudo xargs sed -i 's/REPLACE-OMS-S
 sudo wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
 sudo rpm -ivh epel-release-7-9.noarch.rpm
 sudo yum -y install ansible
+
+#Set Scripts as executable
+sudo chmod +x /source/OSSonAzure/step3-CustomizeDemos-on-jumpbox.sh
+sudo chmod +x /source/OSSonAzure/kubernetes/configK8S.sh
+sudo chmod +x /source/OSSonAzure/kubernetes/refreshK8S.sh
+sudo chmod +x /source/OSSonAzure/azscripts/newVM.sh
