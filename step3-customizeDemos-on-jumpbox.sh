@@ -36,7 +36,7 @@ sudo rpm -ivh epel-release-7-9.noarch.rpm
 sudo yum -y install ansible
 
 #Set Scripts as executable
-sudo chmod +x /source/OSSonAzure/step3-CustomizeDemos-on-jumpbox.sh
+sudo chmod +x /source/OSSonAzure/step3-customizeDemos-on-jumpbox.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/configK8S.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/refreshK8S.sh
 sudo chmod +x /source/OSSonAzure/azscripts/newVM.sh
