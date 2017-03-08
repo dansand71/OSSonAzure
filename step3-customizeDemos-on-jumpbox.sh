@@ -30,10 +30,11 @@ sudo grep -rl REPLACE-OMS-WORKSPACE ./ | sudo xargs sed -i 's/REPLACE-OMS-WORKSP
 echo "Change the OMS Subscription ID"
 sudo grep -rl REPLACE-OMS-SUBSCRIPTIONID ./ | sudo xargs sed -i 's/REPLACE-OMS-SUBSCRIPTIONID/new-oms-subscriptionkey-from-portal/g'
 
-#Install and configure Ansible as needed
+#Install and configure Ansible as needed and cleanup the download
 sudo wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
 sudo rpm -ivh epel-release-7-9.noarch.rpm
 sudo yum -y install ansible
+sudo rm -rf epel-release-7-9.noarch.rpm*.*
 
 #Set Scripts as executable
 sudo chmod +x /source/OSSonAzure/step3-customizeDemos-on-jumpbox.sh
