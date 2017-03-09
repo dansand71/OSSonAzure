@@ -22,5 +22,5 @@
       command: chmod +x /etc/InstallDependencyAgent-Linux64.bin
 
     - name: Install and Configure OMS Service Mapping Tool
-      shell: sh /etc/InstallDependencyAgent-Linux64.bin -s
+      command: /etc/InstallDependencyAgent-Linux64.bin -s
 
