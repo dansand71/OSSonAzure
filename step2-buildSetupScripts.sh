@@ -21,32 +21,32 @@ sudo chown -R GBBOSSDemo ./source/OSSonAzure/.
 
 #CHANGE your VALUES HERE
 echo "Change the server names"
-sudo grep -rl VALUEOF-UNIQUE-SERVER-PREFIX ./source --exlude step2-buildSetupScripts.sh  | sudo xargs sed -i 's/VALUEOF-UNIQUE-SERVER-PREFIX/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-UNIQUE-SERVER-PREFIX ./source/OSSonAzure --exlude step2-buildSetupScripts.sh  | sudo xargs sed -i 's/VALUEOF-UNIQUE-SERVER-PREFIX/NEW-DATA-HERE/g'
 
 echo "Change the REGISTRY NAuserME"
-sudo grep -rl VALUEOF-REGISTRY-USER-NAME ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REGISTRY-USER-NAME/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-REGISTRY-USER-NAME ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REGISTRY-USER-NAME/NEW-DATA-HERE/g'
 
 echo "Change the STORAGE NAME"
-sudo grep -rl VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX/NEW-DATA-HERE/g'
 
 
 echo "Change the Registry Server"
-sudo grep -rl VALUEOF-REGISTRY-SERVER-NAME ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REGISTRY-SERVER-NAME/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-REGISTRY-SERVER-NAME ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REGISTRY-SERVER-NAME/NEW-DATA-HERE/g'
 
 
 echo "Change the Registry password"
-sudo grep -rl VALUEOF-REGISTRY-PASSWORD ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX/VALUEOF-REGISTRY-PASSWORD/g'
+sudo grep -rl VALUEOF-REGISTRY-PASSWORD ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX/VALUEOF-REGISTRY-PASSWORD/g'
 
 
 echo "Change the OMS Workspace"
-sudo grep -rl VALUEOF-REPLACE-OMS-WORKSPACE ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REPLACE-OMS-WORKSPACE/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-REPLACE-OMS-WORKSPACE ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REPLACE-OMS-WORKSPACE/NEW-DATA-HERE/g'
 
 
 echo "Change the OMS Key"
-sudo grep -rl VALUEOF-REPLACE-OMS-PRIMARYKEY ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REPLACE-OMS-PRIMARYKEY/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-REPLACE-OMS-PRIMARYKEY ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-REPLACE-OMS-PRIMARYKEY/NEW-DATA-HERE/g'
 
 echo "Change the App Insights Key"
-sudo grep -rl VALUEOF-APPLICATION-INSIGHTS-KEY ./source --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-APPLICATION-INSIGHTS-KEY/NEW-DATA-HERE/g'
+sudo grep -rl VALUEOF-APPLICATION-INSIGHTS-KEY ./source/OSSonAzure --exlude step2-buildSetupScripts.sh | sudo xargs sed -i 's/VALUEOF-APPLICATION-INSIGHTS-KEY/NEW-DATA-HERE/g'
 
 
 #Set Scripts as executable
