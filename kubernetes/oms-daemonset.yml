@@ -13,7 +13,7 @@ spec:
         - name: WSID
           value: REPLACE-OMS-WORKSPACE
         - name: KEY
-          value: REPLACE-OMS-SUBSCRIPTIONID
+          value: RREPLACE-OMS-PRIMARYKEY
         image: microsoft/oms
         name: omsagent
         ports:

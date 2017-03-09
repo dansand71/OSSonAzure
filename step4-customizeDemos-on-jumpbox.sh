@@ -14,7 +14,7 @@ echo "Change the REGISTRY NAME"
 sudo grep -rl REPLACE-REGISTRY-NAME ./ --exclude step3-customizeDemos-on-jumpbox.sh| sudo xargs sed -i 's/REPLACE-REGISTRY-NAME/new-registry-name-from-portal/g'
 
 echo "Change the REGISTRY PASSWORD"
-sudo grep -rl REPLACE-REGISTRY-PASSWOR ./ --exclude step3-customizeDemos-on-jumpbox.sh| sudo xargs sed -i 's/REPLACE-REGISTRY-PASSWORD/new-password-from-portal/g'
+sudo grep -rl REPLACE-REGISTRY-PASSWORD ./ --exclude step3-customizeDemos-on-jumpbox.sh| sudo xargs sed -i 's/REPLACE-REGISTRY-PASSWORD/new-password-from-portal/g'
 
 echo "Change the APP INSIGHT KEY "
 sudo grep -rl REPLACE-APP-INSIGHTS-KEY ./ --exclude step3-customizeDemos-on-jumpbox.sh| sudo xargs sed -i 's/REPLACE-APP-INSIGHTS-KEY/new-app-insights-key-from-portal/g'
@@ -36,5 +36,9 @@ sudo chmod +x /source/OSSonAzure/kubernetes/configK8S.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/refreshK8S.sh
 sudo chmod +x /source/OSSonAzure/kubernetes/deploy.sh
 sudo chmod +x /source/OSSonAzure/azscripts/newVM.sh
+
+sudo cat /source/OSSonAzure/ssh-keys/id_rsa > ~/.ssh/id_rsa
+sudo chmod 600 ~/.ssh/id_rsa
+sudo echo "export ANSIBLE_HOST_KEY_CHECKING=false" >> ~/.bashrc
 
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/utility-server-configuration.yml -v

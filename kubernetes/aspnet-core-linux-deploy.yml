@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: aspnet-core-linux
-        image: REPLACE-REGISTRY-NAME-microsoft.azurecr.io/gbbossdemo/aspnet-core-linux:latest
+        image: REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
