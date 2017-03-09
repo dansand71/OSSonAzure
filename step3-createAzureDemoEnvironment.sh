@@ -48,6 +48,11 @@ az network nsg rule create --resource-group ossdemo-kubernetes --nsg-name NSG-os
 echo 'Create Availability set for docker-demo environment'
 az vm availability-set create -n ossdemo-docker-availabilityset -g ossdemo-docker --platform-update-domain-count 5 --platform-fault-domain-count 2
 
+#CREATE OSSDemo-Docker Public Ip and Load Balancer
+echo 'Create public IP for Docker Demo Resource Group'
+az network public-ip create -g ossdemo-docker -n ossdemo-docker-publicIP -l eastus --dns-name VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX-docker
+az network lb create -g ossdemo-docker -n ossdemo-docker-publicLoadBalancer -l eastus --public-ip-address ossdemo-docker-publicIP
+az network lb address-pool create --lb-name ossdemo-docker-publicLoadBalancer--name ossdemo-docker-addresspool --resource-group ossdemo-docker
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""

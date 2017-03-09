@@ -22,3 +22,9 @@ sudo yum install ansible -y
 
 #Run the configuration for the JUMPBOX
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/utility-server-configuration.yml -v
+
+#Copy the desktop icons
+sudo cp /source/OSSonAzure/vm-assets/*.desktop /home/GBBOSSDemo/Desktop/
+sudo chmod +x /home/GBBOSSDemo/Desktop/code.desktop
+sudo chmod +x /home/GBBOSSDemo/Desktop/firefox.desktop
+sudo chmod +x /home/GBBOSSDemo/Desktop/gnome-terminal.desktop
