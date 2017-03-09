@@ -7,7 +7,7 @@ Research Kubectl add command in step 3-createAzureEnvironment.sh file - "sudo az
 Fix issue where K8S cluster does not pull down the latest image even though it has been updated in the registry:
     kuberenetes\refreshK8S.sh - kubectl set image deployment/aspnet-core-linux-deployment aspnet-core-linux=VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux:latest
     we need this line to vary between aspnet-core-linux:latest and aspnet-core-linux (Tag change enforces a new image pull)
-move from 2 proc boxes to 1 proc
+
 
 Add ability to configure diagnositcs upon machine creation of jumpbox and docker demo nodes
 Add turning on auto-shutdown so the demo environment is manageable
@@ -21,3 +21,11 @@ Add datadog to the OMS monitoring suite for containers
 Add node.js app demo
 Add Openshift demo in addition to K8S
 Add ability to grow replica sets in K8S from the portal
+
+
+
+
+Completed items:
+3/9 -- move from 2 proc boxes to 1 proc
+3/9 -- create directory structure for additional demo's down the road
+3/9 -- separate out the enviro setup from the demo setup
