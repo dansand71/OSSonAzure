@@ -23,7 +23,7 @@
     become: true
     ignore_errors: true
   - name: Delete the existing DOCKER image  - Save Space
-    command: docker rmi REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux -f
+    command: docker rmi VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux -f
     become: true
     ignore_errors: true
   - name: Delete the existing DOCKER registry image  - Save Space
@@ -38,18 +38,18 @@
       chdir: /source/OSSonAzure/sample-apps/aspnet-core-linux
 
   - name: Tag the DOCKER image
-    command: docker tag gbbossdemo/aspnet-core-linux REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
+    command: docker tag gbbossdemo/aspnet-core-linux VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Log into private registry and force re-authorization
     docker_login:
-      registry: REGISTRY-SERVER-NAME
-      username: REGISTRY-USER-NAME
-      password: REGISTRY-PASSWORD
+      registry: VALUEOF-REGISTRY-SERVER-NAME
+      username: VALUEOF-REGISTRY-USER-NAME
+      password: VALUEOF-REGISTRY-PASSWORD
       reauthorize: yes
 
   - name: Push to the Azure Private Registry
-    command: docker push REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
+    command: docker push VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
     become: true
 
 #Now deploy the containers on the worker nodes
@@ -61,9 +61,9 @@
   tasks: 
   - name: Log into private registry and force re-authorization
     docker_login:
-      registry: REGISTRY-SERVER-NAME
-      username: REGISTRY-USER-NAME
-      password: REGISTRY-PASSWORD
+      registry: VALUEOF-REGISTRY-SERVER-NAME
+      username: VALUEOF-REGISTRY-USER-NAME
+      password: VALUEOF-REGISTRY-PASSWORD
       reauthorize: yes
 
   - name: Kill the existing DOCKER container
@@ -77,11 +77,11 @@
     ignore_errors: true
 
   - name: Pull the new DOCKER container
-    command: docker pull REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
+    command: docker pull VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Start the DOCKER container
-    command: docker run -d -p 80:5000 --name=aspnet-core-linux REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
+    command: docker run -d -p 80:5000 --name=aspnet-core-linux VALUEOF-REGISTRY-SERVER-NAME/gbbossdemo/aspnet-core-linux
     become: true
 
   - name: Start the monitoring container for Application Insights if not already running

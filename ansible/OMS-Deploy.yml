@@ -10,7 +10,7 @@
         dest: /etc/onboard_agent.sh
         
     - name: Install and Configure Agent
-      shell: sudo sh /etc/onboard_agent.sh -w REPLACE-OMS-WORKSPACE -s REPLACE-OMS-PRIMARYKEY -d opinsights.azure.com
+      shell: sudo sh /etc/onboard_agent.sh -w VALUEOF-REPLACE-OMS-WORKSPACE -s VALUEOF-REPLACE-OMS-PRIMARYKEY -d opinsights.azure.com
 
     - name: Get OMS Service Map
       get_url: 

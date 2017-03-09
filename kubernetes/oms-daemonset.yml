@@ -11,9 +11,9 @@ spec:
       containers:
       - env:
         - name: WSID
-          value: REPLACE-OMS-WORKSPACE
+          value: VALUEOF-REPLACE-OMS-WORKSPACE
         - name: KEY
-          value: RREPLACE-OMS-PRIMARYKEY
+          value: VALUEOF-RREPLACE-OMS-PRIMARYKEY
         image: microsoft/oms
         name: omsagent
         ports:

@@ -9,8 +9,8 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [rhelrunners]
-ossdemo-svr21-UNIQUE-SERVER-PREFIX.eastus.cloudapp.azure.com
-ossdemo-svr22-UNIQUE-SERVER-PREFIX.eastus.cloudapp.azure.com
+ossdemo-svr21-VALUEOF-UNIQUE-SERVER-PREFIX.eastus.cloudapp.azure.com
+ossdemo-svr22-VALUEOF-UNIQUE-SERVER-PREFIX.eastus.cloudapp.azure.com
 
 [buildbox]
 localhost

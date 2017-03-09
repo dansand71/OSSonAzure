@@ -23,7 +23,7 @@ echo "BUILD STORAGE ACCOUNTS"
 echo "--------------------------------------------"
 echo "Create Utility Storage account - you may need to change this in case there is a conflict"
 echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
-az storage account create -l eastus -n UNIQUE-STORAGE-ACCOUNT-PREFIX-storage -g ossdemo-utility --sku Standard_LRS
+az storage account create -l eastus -n VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX-storage -g ossdemo-utility --sku Standard_LRS
 
 #BUILD NETWORKS SECURTIY GROUPS and RULES
 echo ""
@@ -54,13 +54,13 @@ echo "Create Azure Registry - this will be used to host the docker containers.  
 echo "--------------------------------------------"
 echo " navigate to the Utility resource group.  Name the registry - gbbossdemoregistry"
 az component update --add acr
-az acr create -n REPLACE-REGISTRY-NAME -g ossdemo-utility -l eastus --storage-account-name UNIQUE-STORAGE-ACCOUNT-PREFIX-storage --admin-enabled true
+az acr create -n VALUEOF-REGISTRY-USER-NAME -g ossdemo-utility -l eastus --storage-account-name VALUEOF-UNIQUE-STORAGE-ACCOUNT-PREFIX-storage --admin-enabled true
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
 echo 'Create CENTOS utility machine for RDP, Container BUILD and administration demos'
 echo "--------------------------------------------"
-az vm create -g 'ossdemo-utility' -n utility-UNIQUE-SERVER-PREFIX-jumpbox --public-ip-address-dns-name 'utility-UNIQUE-SERVER-PREFIX-jumpbox' --os-disk-name 'utility-UNIQUE-SERVER-PREFIX-jumpbox-disk' \
+az vm create -g 'ossdemo-utility' -n utility-VALUEOF-UNIQUE-SERVER-PREFIX-jumpbox --public-ip-address-dns-name 'utility-VALUEOF-UNIQUE-SERVER-PREFIX-jumpbox' --os-disk-name 'utility-VALUEOF-UNIQUE-SERVER-PREFIX-jumpbox-disk' \
         --image "OpenLogic:CentOS:7.2:latest" --os-type linux --nsg 'NSG-ossdemo-utility'  --storage-sku 'Premium_LRS' --size Standard_DS2_v2 --admin-username GBBOSSDemo \
         --no-wait --ssh-key-value 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
 
@@ -75,4 +75,4 @@ echo "--------------------------------------------"
 echo "Attempting to install the kubernetes client within the Azure CLI tools.  This can fail.  Try to resolve and re-run: sudo az acs kubernetes install-cli"
 sudo az acs kubernetes install-cli
 echo "CREATE K8S Cluster"
-az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=ossdemo-k8s-REPLACEME --dns-prefix=ossdemo-k8s-REPLACEME --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
+az acs create --orchestrator-type=kubernetes --resource-group=ossdemo-kubernetes --name=ossdemo-k8s-VALUEOF-UNIQUE-SERVER-PREFIX --dns-prefix=ossdemo-k8s-VALUEOF-UNIQUE-SERVER-PREFIX --admin-username GBBOSSDemo --master-count 1 --ssh-key-value='ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
