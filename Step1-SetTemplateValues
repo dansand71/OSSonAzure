@@ -7,16 +7,20 @@ UNIQUE-STORAGE-ACCOUNT-PREFIX=
 #### Azure Registry Values #######
 #This is typically gathered from the Azure portal.  example value REGISTRY-SERVER-NAME=dansand-microsoft.azurecr.io or REGISTRY-SERVER-NAME=timwalt-on.azurecr.io
 REGISTRY-SERVER-NAME=
+
 #This is typically gathered from the Azure portal.  example value REGISTRY-USER-NAME=dansand
 REGISTRY-USER-NAME=
+
 #Set your Azure registry Server Password from the azure portal.  example value REPLACE-REGISTRY-PASSWORD=MbR=vi6xKObgETfZYFLhwZl2PJRLMo4R
 REGISTRY-PASSWORD=
 
 #### Azure OMS Values #######
 #From your OMS Portal.  Settings --> Connected Sources --> Linux Servers --> Workspace ID.  Example value REPLACE-OMS-WORKSPACE=8db382ab-1870-4ae0-bc1d-d258c4b947a4
 REPLACE-OMS-WORKSPACE=
+
 #From your OMS Portal.  Settings --> Connected Sources --> Linux Servers --> Primary Key Value.  Example value REPLACE-OMS-PRIMARYKEY=l1X4hDSPK4HtdQ/OdqnqvWRdScgymqgUGrKCEshJMrT6ODaqiSAc3e98A1Fu0mP/7hYAdUA9xciutTnNdI8BfQ==
 REPLACE-OMS-PRIMARYKEY=
+
 #This is gathered from your Azure Portal.  Resource Groups --> ossdemo-utility --> Azure Application Insights item --> Properties -->Instrumentation Key.  Example value APPLICATION-INSIGHTS-KEY=d8f672ed-fd97-4877-a421-f93779998b3a
 APPLICATION-INSIGHTS-KEY=
 
