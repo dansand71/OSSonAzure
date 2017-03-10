@@ -1,6 +1,0 @@
-FROM microsoft/dotnet:latest
-ARG source=./bin/Debug/netcoreapp1.1/publish
-WORKDIR /app
-COPY $source /app
-EXPOSE 5000
-ENTRYPOINT dotnet /app/aspnet-core-linux.dll
