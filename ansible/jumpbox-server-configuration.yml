@@ -8,19 +8,33 @@
   tasks: 
   - name: update YUM
     yum: name=* state=latest
+  
+  - name: Install epel
+    yum: name=epel-release state=latest
+
+  - name: Install python and pip
+    yum: name=python-pip state=latest
+  
+  - name: install Git
+    yum: name=git state=latest
+
+  - name: install Ansible
+    yum: name=ansible state=latest
+
+#does this work?
+  - git:
+      repo: https://github.com/dansand71/OSSonAzure
+      dest: /source
+      clone: yes
+      update: yes
 
 # This playbook installs and configures all the items necessary for building out the demo's'  x3
   - name: install docker
     yum: name=docker state=latest
   
-  - name: enable the extras repo and install epel
-    command: yum --enablerepo=extras install epel-release -y
-  
-  - name: Install PIP
-    easy_install:
-      name: pip
-      state: latest
-  
+  # - name: enable the extras repo and install epel
+  #   command: yum --enablerepo=extras install epel-release -y
+    
   - name: install docker-py
     pip: name=docker-py version=1.9
   
@@ -31,15 +45,16 @@
       enabled: yes
       
 # Install XRDP and TigerVNC - this is for RDP access and demo - http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-xrdp-on-centos-7-rhel-7.html
-  - name: download epel
-    yum: name=epel-release state=latest
   - name: install nux for demo purposes
     command: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
     ignore_errors: yes
+  
   - name: install XRDP for demo purposes
     yum: name=xrdp state=latest
+  
   - name: install TigerVNC for demo purposes
     yum: name=tigervnc state=latest
+  
   - name: Start xrdp
     service: 
       name: xrdp 
@@ -133,3 +148,4 @@
 # We need to set the ansible variables - requires reboot to take effect
   - name: set the environment variables for Ansbile - requires reboot after to take effect
     command: echo ''"EXPORT ANSIBLE_HOST_KEY_CHECKING = "false"' >> /home/GBBOSSDemo/.bashrc"
+
