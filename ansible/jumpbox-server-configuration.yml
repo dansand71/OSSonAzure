@@ -21,10 +21,20 @@
   - name: install Ansible
     yum: name=ansible state=latest
 
-#does this work?
+#Initially Clone the GIT Repositories
   - git:
       repo: https://github.com/dansand71/OSSonAzure
-      dest: /source
+      dest: /source/OSSonAzure
+      clone: yes
+      update: yes
+  - git:
+      repo: https://github.com/dansand71/AppDev-Demos
+      dest: /source/OSSonAzure/AppDev-Demos
+      clone: yes
+      update: yes
+  - git:
+      repo: https://github.com/dansand71/AppDev-ContainerDemo
+      dest: /source/OSSonAzure/AppDev-Demos/AppDev-ContainerDemo
       clone: yes
       update: yes
 
@@ -148,4 +158,3 @@
 # We need to set the ansible variables - requires reboot to take effect
   - name: set the environment variables for Ansbile - requires reboot after to take effect
     command: echo ''"EXPORT ANSIBLE_HOST_KEY_CHECKING = "false"' >> /home/GBBOSSDemo/.bashrc"
-
