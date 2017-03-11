@@ -1,4 +1,6 @@
 Issues:
+Create a wait loop based on SSH or ping before we try to run the shell script....
+
 Create setup SED process for modifying files
 Create process for moving the step 1 "SetTemplateValues" file up to the utility jumpbox once complete
 Resolve the OMS Client issue - will not install on nodes
