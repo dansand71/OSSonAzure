@@ -21,22 +21,22 @@
   - name: install Ansible
     yum: name=ansible state=latest
 
-#Initially Clone the GIT Repositories
-  - git:
-      repo: https://github.com/dansand71/OSSonAzure
-      dest: /source/OSSonAzure
-      clone: yes
-      update: yes
-  - git:
-      repo: https://github.com/dansand71/AppDev-Demos
-      dest: /source/OSSonAzure/AppDev-Demos
-      clone: yes
-      update: yes
-  - git:
-      repo: https://github.com/dansand71/AppDev-ContainerDemo
-      dest: /source/OSSonAzure/AppDev-Demos/AppDev-ContainerDemo
-      clone: yes
-      update: yes
+#Initially Clone the GIT Repositories - This is not working today
+  # - git:
+  #     repo: https://github.com/dansand71/OSSonAzure
+  #     dest: /source/OSSonAzure
+  #     clone: yes
+  #     update: yes
+  # - git:
+  #     repo: https://github.com/dansand71/AppDev-Demos
+  #     dest: /source/OSSonAzure/AppDev-Demos
+  #     clone: yes
+  #     update: yes
+  # - git:
+  #     repo: https://github.com/dansand71/AppDev-ContainerDemo
+  #     dest: /source/OSSonAzure/AppDev-Demos/AppDev-ContainerDemo
+  #     clone: yes
+  #     update: yes
 
 # This playbook installs and configures all the items necessary for building out the demo's'  x3
   - name: install docker
