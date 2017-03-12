@@ -8,7 +8,8 @@ echo "Installation will require SU rights."
 echo ""
 echo "Installing git & ansible if they are missing."
 
-ssh GBBOSSDemo@jumpbox-dansand71.eastus.cloudapp.azure.com 'echo -e "AzureForOSS\nAzureForOSS" | passwd GBBOSSDemo'
+
+
 #Check DISTRO
 if [ -f /etc/redhat-release ]; then
   sudo yum update -y
@@ -22,11 +23,11 @@ if [ -f /etc/lsb-release ]; then
      echo "   could not find git - installing...."
      sudo apt-get install git -y
   fi
-  sudo apt-get install software-properties-common -y
-  sudo apt-add-repository ppa:ansible/ansible -y
-  sudo apt-get update -y
-  sudo apt-get install ansible -y
-  sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
+  # sudo apt-get install software-properties-common -y
+  # sudo apt-add-repository ppa:ansible/ansible -y
+  # sudo apt-get update -y
+  # sudo apt-get install ansible -y
+  # sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
 fi
 
 echo ""
@@ -70,12 +71,37 @@ read -p "Server Prefix:" serverPrefix
 serverPrefix=${serverPrefix,,} 
 echo ""
 
+
+### JUMPBOX SERVER PASSWORD
 echo ""
 echo "Set initial password for jumpbox server:"
 stty -echo
 read jumpboxPassword
 stty echo
 echo ""
+
+#Looking for jumpbox ssh key - if not found create one
+echo "We are copying in a new private key.  If we find an existing id_rsa we will make a copy and cleanup after."
+if [ -f ~/.ssh/ossdemo_id_rsa ]
+  then
+    echo "    Existing private key found.  Using this key ~/.ssh/ossdemo_id_rsa for jumpbox creation"
+  else
+    echo "    Creating new key for ssh in ~/.ssh/ossdemo_id_rsa"
+    #Create key
+    ssh-keygen -f ~/.ssh/ossdemo_id_rsa -N ""
+    #Add this key to the ssh config file
+    
+fi
+if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
+then
+    # Replace the server with the right private key
+    sudo sed -i "s/*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*/Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com  IdentityFile ~/..ssh/ossdemo_id_rsa/g" ~/.ssh/config
+else
+    # Add this to the config file
+    sudo echo "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com  IdentityFile ~/..ssh/ossdemo_id_rsa" >> ~/.ssh/config
+fi
+sudo chmod 600 ~/.ssh/config
+sudo chmod 600 ~/.ssh/oss*
 
 # Check the validity of the name (no dashes, spaces, less than 8 char, no special chars etc..)"
 # Can we set a Enviro variable so if you want to rerun it is here and set by default?
@@ -85,12 +111,9 @@ read -e -i "$serverPrefix" -p "Storage Prefix: " storagePrefix
 storagePrefix=${storagePrefix,,}
 echo ""
 
-echo "Building environment with Server:" $serverPrefix " and Storage Account: " $storagePrefix
-read -p "Continue? [y/n]" continuescript
-if [[ $continuescript != "y" ]];then
-  echo "exiting..."
-  exit
-fi
+echo ""
+read -p "Create resource group, and network rules?"  continuescript
+if [[ $continuescript != "n" ]];then
 
 #BUILD RESOURCE GROUPS
 echo ""
@@ -98,15 +121,6 @@ echo "BUILDING RESOURCE GROUPS"
 echo "--------------------------------------------"
 echo 'create utility resource group'
 az group create --name ossdemo-utility --location eastus
-
-#BUILD STORAGE ACCOUNTS
-echo ""
-echo "BUILDING STORAGE ACCOUNTS"
-echo "--------------------------------------------"
-echo "Create Utility Storage account - you may need to change this in case there is a conflict"
-echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
-
-az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS
 
 #BUILD NETWORKS SECURTIY GROUPS and RULES
 echo ""
@@ -129,17 +143,33 @@ az network nsg rule create --resource-group ossdemo-utility \
      --source-address-prefix Internet \
      --source-port-range "*" --destination-address-prefix "*" \
      --destination-port-range 22
+fi
+echo ""
+read -p "Create storage accounts and jumpbox server?"  continuescript
+if [[ $continuescript != "n" ]];then
+
+#BUILD STORAGE ACCOUNTS
+echo ""
+echo "BUILDING STORAGE ACCOUNTS"
+echo "--------------------------------------------"
+echo "Create Utility Storage account - you may need to change this in case there is a conflict"
+echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
+
+az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
 echo 'Creating CENTOS JUMPBOX utility machine for RDP and ssh'
+echo 'Reading ssh key information from local ossdemo_id_rsa.pub file'
 echo "--------------------------------------------"
+sshpubkey=$(< ~/.ssh/ossdemo_id_rsa.pub)
 az vm create -g ossdemo-utility -n jumpbox-${serverPrefix} \
         --public-ip-address-dns-name jumpbox-${serverPrefix} \
         --os-disk-name jumpbox-${serverPrefix}-disk \
         --image "OpenLogic:CentOS:7.2:latest" --os-type linux --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS \
         --size Standard_DS1_v2 --admin-username GBBOSSDemo \
-        --ssh-key-value 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAz7ItfqCoqLGGbSdNT52SrZvIO2Fc26yUUyPxohN4IYxUcc1O9tmXzxHwah0jwMOw6ux+JbycOEiEpxoYPLOe9R98cKMyilnL9hGs6jCmVmRLuc/ny76euR2t8v0lhGT1yTrkLpwIlfkcaDqpufkIqQmqd20NlWbdHzsYA+s++e3jIgE5qJwO/InlMvv90nkPftR/PRYq7etWgImi00qQgX1VcD8NMZzm1qC4unzEQhYbIqYAgScCzeaj5U5NSOvDm6wgwceBCcdM8jSm7SYdetVm3J3cd+hO+SVKYgx8Zg1+kdh9RkaE2+ZRr0wtoUi/ClOXb53a4rtfYYzj85/W9w== rsa-key-20170222'
+        --ssh-key-value "${sshpubkey}"
+fi
 
 #Download the GIT Repo for keys etc.
 echo "--------------------------------------------"
@@ -149,16 +179,16 @@ cd /source
 sudo rm -rf /source/OSSonAzure
 sudo git clone https://github.com/dansand71/OSSonAzure
 
-#Created Server - now SSH into the server
-echo "We are copying in a new private key.  If we find an existing id_rsa we will make a copy and cleanup after."
-if [ -f ~/.ssh/id_rsa ]
-  then
-    echo "    Existing private key found.  Making a copy for backup id_rsa_OSSDEMOBACKUP"
-    sudo mv ~/.ssh/id_rsa ~/.ssh/id_rsa_OSSDEMOBACKUP
-fi
-sudo cp /source/OSSonAzure/ssh-keys/id_rsa ~/.ssh/id_rsa
-sudo chmod 600 ~/.ssh/id_rsa
-sudo chown $USER ~/.ssh/id_rsa
+# #Created Server - now SSH into the server
+# echo "We are copying in a new private key.  If we find an existing id_rsa we will make a copy and cleanup after."
+# if [ -f ~/.ssh/id_rsa ]
+#   then
+#     echo "    Existing private key found.  Making a copy for backup id_rsa_OSSDEMOBACKUP"
+#     sudo mv ~/.ssh/id_rsa ~/.ssh/id_rsa_OSSDEMOBACKUP
+# fi
+# sudo cp /source/OSSonAzure/ssh-keys/id_rsa ~/.ssh/id_rsa
+# sudo chmod 600 ~/.ssh/id_rsa
+# sudo chown $USER ~/.ssh/id_rsa
 
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
@@ -169,16 +199,16 @@ ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com 'echo "root:${jumpboxPassword}" | sudo chpasswd'
 
-echo ""
-echo "Cleaning up the RSA Keys"
-#CLEANUP & Finish
-if [ -f ~/.ssh/id_rsa_OSSDEMOBACKUP ]
-  then
-    echo "    Restoring previous SSH private key."
-    sudo rm ~/.ssh/id_rsa
-    sudo mv ~/.ssh/id_rsa_OSSDEMOBACKUP ~/.ssh/id_rsa
-fi
-echo ""
+# echo ""
+# echo "Cleaning up the RSA Keys"
+# #CLEANUP & Finish
+# if [ -f ~/.ssh/id_rsa_OSSDEMOBACKUP ]
+#   then
+#     echo "    Restoring previous SSH private key."
+#     sudo rm ~/.ssh/id_rsa
+#     sudo mv ~/.ssh/id_rsa_OSSDEMOBACKUP ~/.ssh/id_rsa
+# fi
+# echo ""
 
 echo ""
 echo "Launch Microsoft RDP via WindowsKey --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
