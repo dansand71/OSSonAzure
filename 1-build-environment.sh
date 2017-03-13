@@ -193,5 +193,5 @@ ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpb
 
 echo ""
 echo "Launch Microsoft RDP via WindowsKey --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
+echo "To Launch SSH - ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
 echo "Demos will be found under \source\OSSonAzure"
-echo ""
