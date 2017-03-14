@@ -95,10 +95,11 @@ fi
 if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
 then
     # Replace the server with the right private key
-    sudo sed -i "s/*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*/Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com  IdentityFile ~/.ssh/jumpbox_${serverPrefix}_id_rsa/g" ~/.ssh/config
+    # BUG BUG - we need to actually replace the next three lines with new values
+    # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=GBBOSSDemo@g" ~/.ssh/config
 else
     # Add this to the config file
-    sudo echo "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com  IdentityFile ~/.ssh/jumpbox_${serverPrefix}_id_rsa" >> ~/.ssh/config
+    echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com/n  IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa/n  User=GBBOSSDemo" >> ~/.ssh/config
 fi
 sudo chmod 600 ~/.ssh/config
 sudo chmod 600 ~/.ssh/jumpbox*
@@ -184,14 +185,19 @@ sudo git clone https://github.com/dansand71/OSSonAzure
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
 sudo sed -i -e "s/JUMPBOXSERVER-REPLACE/jumpbox-${serverPrefix}.eastus.cloudapp.azure.com/g" /source/OSSonAzure/ansible/hosts
-ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
+ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa --become GBBOSSDemo
 
 #Set the remote jumpbox passwords
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "root:${jumpboxPassword}" | sudo chpasswd'
 
+#Copy the SSH private & public keys up to the jumpbox server
+scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
+scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
+ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
 
 echo ""
-echo "Launch Microsoft RDP via WindowsKey --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
-echo "To Launch SSH - ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
-echo "Demos will be found under \source\OSSonAzure"
+echo "Launch Microsoft or MAC RDP via --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
+echo "SSH is available via: ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "
+echo "Demos on the jumpbox server will be found under \source\OSSonAzure"
+echo ""
