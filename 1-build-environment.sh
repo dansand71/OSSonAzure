@@ -1,4 +1,3 @@
-#!/bin/bash
 echo "Welcome to the OSS Demo Jumpbox install process.  This script will:"
 echo "    - Install git"
 echo "    - Install Azure CLI if not present"
@@ -7,8 +6,6 @@ echo ""
 echo "Installation will require SU rights."
 echo ""
 echo "Installing git & ansible if they are missing."
-
-
 
 #Check DISTRO
 if [ -f /etc/redhat-release ]; then
@@ -23,11 +20,11 @@ if [ -f /etc/lsb-release ]; then
      echo "   could not find git - installing...."
      sudo apt-get install git -y
   fi
-   sudo apt-get install software-properties-common -y
-   sudo apt-add-repository ppa:ansible/ansible -y
-   sudo apt-get update -y
-   sudo apt-get install ansible -y
-   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
+#   sudo apt-get install software-properties-common -y
+#   sudo apt-add-repository ppa:ansible/ansible -y
+#   sudo apt-get update -y
+#   sudo apt-get install ansible -y
+#   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
 fi
 
 echo ""
@@ -89,17 +86,17 @@ if [ -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa ]
     echo "    Creating new key for ssh in ~/.ssh/ossdemo_id_rsa"
     #Create key
     ssh-keygen -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa -N ""
-    #Add this key to the ssh config file
-    
+    #Add this key to the ssh config file 
 fi
 if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
 then
     # Replace the server with the right private key
     # BUG BUG - we need to actually replace the next three lines with new values
     # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=GBBOSSDemo@g" ~/.ssh/config
+    echo ""
 else
     # Add this to the config file
-    echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com/n  IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa/n  User=GBBOSSDemo" >> ~/.ssh/config
+    echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=GBBOSSDemo" >> ~/.ssh/config
 fi
 sudo chmod 600 ~/.ssh/config
 sudo chmod 600 ~/.ssh/jumpbox*
@@ -114,7 +111,7 @@ storagePrefix=${storagePrefix,,}
 echo ""
 
 echo ""
-read -p "Create resource group, and network rules?"  continuescript
+read -p "Create resource group, and network rules? [y/n]:"  continuescript
 if [[ $continuescript != "n" ]];then
 
 #BUILD RESOURCE GROUPS
@@ -147,7 +144,7 @@ az network nsg rule create --resource-group ossdemo-utility \
      --destination-port-range 22
 fi
 echo ""
-read -p "Create storage accounts and jumpbox server?"  continuescript
+read -p "Create storage accounts and jumpbox server? [y/n]:"  continuescript
 if [[ $continuescript != "n" ]];then
 
 #BUILD STORAGE ACCOUNTS
@@ -161,8 +158,8 @@ az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utilit
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
-echo 'Creating CENTOS JUMPBOX utility machine for RDP and ssh'
-echo 'Reading ssh key information from local ossdemo_id_rsa.pub file'
+echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
+echo "Reading ssh key information from local jumpbox_${serverPrefix}_id_rsa file"
 echo "--------------------------------------------"
 
 az vm create -g ossdemo-utility -n jumpbox-${serverPrefix} \
@@ -181,11 +178,12 @@ cd /source
 sudo rm -rf /source/OSSonAzure
 sudo git clone https://github.com/dansand71/OSSonAzure
 
-
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
-sudo sed -i -e "s/JUMPBOXSERVER-REPLACE/jumpbox-${serverPrefix}.eastus.cloudapp.azure.com/g" /source/OSSonAzure/ansible/hosts
-ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa --become GBBOSSDemo
+sudo echo "export ANSIBLE_HOST_KEY_CHECKING=false" >> ~/.bashrc
+export ANSIBLE_HOST_KEY_CHECKING=false
+sudo sed -i -e "s@JUMPBOXSERVER-REPLACE@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
+ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
 
 #Set the remote jumpbox passwords
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
