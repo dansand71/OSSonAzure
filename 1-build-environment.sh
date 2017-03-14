@@ -177,13 +177,19 @@ sudo mkdir /source
 cd /source
 sudo rm -rf /source/OSSonAzure
 sudo git clone https://github.com/dansand71/OSSonAzure
-
+echo ""
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
 sudo echo "export ANSIBLE_HOST_KEY_CHECKING=false" >> ~/.bashrc
 export ANSIBLE_HOST_KEY_CHECKING=false
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
+echo ""
+echo"---------------------------------------------"
+echo "Configure demo template values file"
+sudo sed -i -e "s@JUMPBOX-SERVER-NAME=@JUMPBOX-SERVER-NAME=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/vm-assets/DemoEnvironmentTemplateValues
+sudo sed -i -e "s@DEMO-STORAGE-ACCOUNT=@DEMO-STORAGE-ACCOUNT=${storagePrefix}storage@g" /source/OSSonAzure/vm-assets/DemoEnvironmentTemplateValues
+
 
 #Set the remote jumpbox passwords
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
@@ -193,6 +199,10 @@ ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpb
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
+
+#mkdir for source on jumpbox server
+ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo mkdir /source'
+scp /source/OSSonAzure/DemoEnvironmentTemplateValues GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:/source/DemoEnvironmentTemplateValues
 
 echo ""
 echo "Launch Microsoft or MAC RDP via --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
