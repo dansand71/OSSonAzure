@@ -183,6 +183,8 @@ echo " Calling command: ~/bin/az vm create ${azcreatecommand}"
 ~/bin/az vm create ${azcreatecommand}
 fi
 
+read -p "Please confirm the server is running in the Azure portal before continuing. [press any key to continue]:" 
+
 #Download the GIT Repo for keys etc.
 echo "--------------------------------------------"
 echo "Downloading the Github repo for the connectivity keys and bits."
