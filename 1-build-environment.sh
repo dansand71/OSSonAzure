@@ -161,7 +161,6 @@ echo 'Allow RDP inbound to Utility'
      --destination-port-range 22
 fi
 echo ""
-echo "pubkey:${sshpubkey}"
 read -p "Create storage accounts and jumpbox server? [y/n]:"  continuescript
 if [[ $continuescript != "n" ]];then
 
@@ -179,7 +178,7 @@ echo ""
 echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
 echo "Reading ssh key information from local jumpbox_${serverPrefix}_id_rsa file"
 echo "--------------------------------------------"
-azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image \"OpenLogic:CentOS:7.2:latest\" --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS1_v2 --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
+azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image OpenLogic:CentOS:7.2:latest --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS1_v2 --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
 echo " Calling command: ~/bin/az vm create ${azcreatecommand}"
 ~/bin/az vm create ${azcreatecommand}
 fi
