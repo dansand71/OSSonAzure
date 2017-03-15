@@ -3,6 +3,7 @@ echo "Welcome to the OSS Demo Jumpbox install process.  This script will:"
 echo "    - Install git"
 echo "    - Install Azure CLI if not present"
 echo "    - Log in to Azure and create a Resource Group 'ossdemo-utility' and CENTOS VM"
+echo "  Script currently works against Ubuntu, Centos and RHEL however we are working through a bug with OSX regarding Ansible host length."
 echo ""
 echo "Installation will require SU rights."
 echo ""
@@ -195,8 +196,8 @@ echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
 sudo echo "export ANSIBLE_HOST_KEY_CHECKING=false" >> ~/.bashrc
 export ANSIBLE_HOST_KEY_CHECKING=false
-#BUG on MAC - error you get: too long for Unix domain socket
-#To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r
+#BUGBUGBUG on MAC - error you get: too long for Unix domain socket
+#To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r - DIDNT WORK on 3-15
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
 echo ""
