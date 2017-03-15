@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "Welcome to the OSS Demo Jumpbox install process.  This script will:"
 echo "    - Install git"
 echo "    - Install Azure CLI if not present"
@@ -8,11 +9,14 @@ echo ""
 echo "Installing git & ansible if they are missing."
 
 #Check DISTRO
+echo "Checking OS Distro"
 if [ -f /etc/redhat-release ]; then
+  echo "    found RHEL or CENTOS - proceeding with YUM."
   sudo yum update -y
   sudo yum -y install git
 fi
 if [ -f /etc/lsb-release ]; then
+  echo "    Ubuntu - proceeding with APT."
   gitinfo=$(dpkg-query -W -f='${Package} ${Status} \n' git | grep "git install ok installed")
   if [[ $gitinfo =~ "git install ok installed" ]]; then
      echo "   git installed - skipping"
@@ -25,6 +29,12 @@ if [ -f /etc/lsb-release ]; then
 #   sudo apt-get update -y
 #   sudo apt-get install ansible -y
 #   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
+fi
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "  OSType is:" ${OSTYPE}
+    echo "    MAC Darwin - proceeding with specialized MAC install."
+    sudo easy_install pip
+    sudo pip install ansible
 fi
 
 echo ""
