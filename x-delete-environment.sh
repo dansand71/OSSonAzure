@@ -1,0 +1,1 @@
+~/bin/az group delete --name ossdemo-utility -y

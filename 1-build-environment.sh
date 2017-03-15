@@ -33,6 +33,7 @@ fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "  OSType is:" ${OSTYPE}
     echo "    MAC Darwin - proceeding with specialized MAC install."
+    
     sudo easy_install pip
     sudo pip install ansible
 fi
@@ -53,17 +54,17 @@ echo "Logging in to Azure"
 #Checking to see if we are logged into Azure
 echo "    Checking if we are logged in to Azure."
 #We need to redirect the output streams to stdout
-azstatus=`az group list 2>&1` 
+azstatus=`~/bin/az group list 2>&1` 
 if [[ $azstatus =~ "Please run 'az login' to setup account." ]]; then
    echo "   We need to login to azure.."
-   az login
+   ~/bin/az login
 else
    echo "    Logged in."
 fi
 read -p "    Change default subscription? [y/n]:" changesubscription
 if [[ $changesubscription =~ "y" ]];then
     read -p "      New Subscription Name:" newsubscription
-    az account set --subscription "$newsubscription"
+    ~/bin/az account set --subscription "$newsubscription"
 else
     echo "    Using default existing subscription."
 fi
@@ -75,7 +76,8 @@ echo "Set values for creation of resource groups and jumpbox server"
 echo "    Please enter your unique server prefix: (Jumpbox server will become:'utility-PREFIX-jumpbox')"
 echo "      Note - values should be lowercase and less than 8 characters.')" 
 read -p "Server Prefix:" serverPrefix
-serverPrefix=${serverPrefix,,} 
+# This requires a newer version of BASH not avialble in MAC OS - serverPrefix=${serverPrefix,,} 
+serverPrefix=$(echo "${serverPrefix}" | tr '[:upper:]' '[:lower:]')
 echo ""
 
 
@@ -116,9 +118,14 @@ sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
 # Can we set a Enviro variable so if you want to rerun it is here and set by default?
 echo "    Please enter your unique storage prefix: (Storage Account will become: 'PREFIX-storage'')"
 echo "      Note - values should be lowercase and less than 8 characters.')"
-read -e -i "$serverPrefix" -p "Storage Prefix: " storagePrefix
-storagePrefix=${storagePrefix,,}
-echo ""
+read -p  "Storage Prefix? (default: ${serverPrefix}): " storagePrefix
+[ -z "${storagePrefix}" ] && storagePrefix=${serverPrefix}
+
+#read -e -i "$serverPrefix" -p "Storage Prefix: " storagePrefix
+
+# This requires a newer version of BASH not avialble in MAC OS - storagePrefix=${storagePrefix,,} 
+storagePrefix=$(echo "${storagePrefix}" | tr '[:upper:]' '[:lower:]')
+echo "${storagePrefix}"
 
 echo ""
 read -p "Create resource group, and network rules? [y/n]:"  continuescript
@@ -129,24 +136,24 @@ echo ""
 echo "BUILDING RESOURCE GROUPS"
 echo "--------------------------------------------"
 echo 'create utility resource group'
-az group create --name ossdemo-utility --location eastus
+~/bin/az group create --name ossdemo-utility --location eastus
 
 #BUILD NETWORKS SECURTIY GROUPS and RULES
 echo ""
 echo "BUILDING NETWORKS SECURTIY GROUPS and RULES"
 echo "--------------------------------------------"
 echo 'Network Security Group for utility Resource Group'
-az network nsg create --resource-group ossdemo-utility --name NSG-ossdemo-utility --location eastus
+~/bin/az network nsg create --resource-group ossdemo-utility --name NSG-ossdemo-utility --location eastus
 
 echo 'Allow RDP inbound to Utility'
-az network nsg rule create --resource-group ossdemo-utility \
+~/bin/az network nsg rule create --resource-group ossdemo-utility \
      --nsg-name NSG-ossdemo-utility --name rdp-rule \
      --access Allow --protocol Tcp --direction Inbound --priority 100 \
      --source-address-prefix Internet \
      --source-port-range "*" --destination-address-prefix "*" \
      --destination-port-range 3389
  echo 'Allow SSH inbound to Utility'
- az network nsg rule create --resource-group ossdemo-utility \
+ ~/bin/az network nsg rule create --resource-group ossdemo-utility \
      --nsg-name NSG-ossdemo-utility --name ssh-rule \
      --access Allow --protocol Tcp --direction Inbound --priority 110 \
      --source-address-prefix Internet \
@@ -154,6 +161,7 @@ az network nsg rule create --resource-group ossdemo-utility \
      --destination-port-range 22
 fi
 echo ""
+echo "pubkey:${sshpubkey}"
 read -p "Create storage accounts and jumpbox server? [y/n]:"  continuescript
 if [[ $continuescript != "n" ]];then
 
@@ -163,21 +171,17 @@ echo "BUILDING STORAGE ACCOUNTS"
 echo "--------------------------------------------"
 echo "Create Utility Storage account - you may need to change this in case there is a conflict"
 echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
-
-az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS
+echo "calling ~/bin/az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS"
+~/bin/az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
 echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
 echo "Reading ssh key information from local jumpbox_${serverPrefix}_id_rsa file"
 echo "--------------------------------------------"
-
-az vm create -g ossdemo-utility -n jumpbox-${serverPrefix} \
-        --public-ip-address-dns-name jumpbox-${serverPrefix} \
-        --os-disk-name jumpbox-${serverPrefix}-disk \
-        --image "OpenLogic:CentOS:7.2:latest" --os-type linux --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS \
-        --size Standard_DS1_v2 --admin-username GBBOSSDemo \
-        --ssh-key-value "${sshpubkey}"
+azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image \"OpenLogic:CentOS:7.2:latest\" --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS1_v2 --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
+echo " Calling command: ~/bin/az vm create ${azcreatecommand}"
+~/bin/az vm create ${azcreatecommand}
 fi
 
 #Download the GIT Repo for keys etc.
@@ -185,8 +189,6 @@ echo "--------------------------------------------"
 echo "Downloading the Github repo for the connectivity keys and bits."
 sudo mkdir /source
 cd /source
-sudo rm -rf /source/OSSonAzure
-sudo git clone https://github.com/dansand71/OSSonAzure
 echo ""
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
