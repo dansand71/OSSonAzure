@@ -201,7 +201,7 @@ export ANSIBLE_HOST_KEY_CHECKING=false
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
 echo ""
-echo"---------------------------------------------"
+echo "---------------------------------------------"
 echo "Configure demo template values file"
 sudo sed -i -e "s@JUMPBOX-SERVER-NAME=@JUMPBOX-SERVER-NAME=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/vm-assets/DemoEnvironmentTemplateValues
 sudo sed -i -e "s@DEMO-STORAGE-ACCOUNT=@DEMO-STORAGE-ACCOUNT=${storagePrefix}storage@g" /source/OSSonAzure/vm-assets/DemoEnvironmentTemplateValues
