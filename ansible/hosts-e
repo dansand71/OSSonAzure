@@ -9,4 +9,4 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [buildbox]
-jumpbox-dansandv2
+jumpbox-dansandv2.eastus.cloudapp.azure.com
