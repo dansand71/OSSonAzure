@@ -25,11 +25,11 @@ if [ -f /etc/lsb-release ]; then
      echo "   could not find git - installing...."
      sudo apt-get install git -y
   fi
-#   sudo apt-get install software-properties-common -y
-#   sudo apt-add-repository ppa:ansible/ansible -y
-#   sudo apt-get update -y
-#   sudo apt-get install ansible -y
-#   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
+   sudo apt-get install software-properties-common -y
+   sudo apt-add-repository ppa:ansible/ansible -y
+   sudo apt-get update -y
+   sudo apt-get install ansible -y
+   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
 fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "  OSType is:" ${OSTYPE}
@@ -199,6 +199,7 @@ export ANSIBLE_HOST_KEY_CHECKING=false
 #BUGBUGBUG on MAC - error you get: too long for Unix domain socket
 #To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r - DIDNT WORK on 3-15
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
+cd /source/OSSonAzure/ansible
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
 echo ""
 echo "---------------------------------------------"
