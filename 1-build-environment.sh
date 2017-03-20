@@ -200,6 +200,8 @@ export ANSIBLE_HOST_KEY_CHECKING=false
 #To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r - DIDNT WORK on 3-15
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 cd /source/OSSonAzure/ansible
+echo ""
+echo "Calling command: ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
 ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
 echo ""
 echo "---------------------------------------------"
@@ -209,15 +211,18 @@ sudo sed -i -e "s@DEMO-STORAGE-ACCOUNT=@DEMO-STORAGE-ACCOUNT=${storagePrefix}sto
 
 
 #Set the remote jumpbox passwords
+echo "Resetting GBBOSSDemo and root passwords based on script values."
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "root:${jumpboxPassword}" | sudo chpasswd'
 
 #Copy the SSH private & public keys up to the jumpbox server
+echo "Copying up the SSH Keys for demo purposes to the jumpbox ~/.ssh directories for GBBOSSDemo user."
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
 
 #mkdir for source on jumpbox server
+echo "Copying the template values file to the jumpbox server in /source directory."
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo mkdir /source'
 scp /source/OSSonAzure/DemoEnvironmentTemplateValues GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:/source/DemoEnvironmentTemplateValues
 

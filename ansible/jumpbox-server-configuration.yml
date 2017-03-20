@@ -70,10 +70,13 @@
       name: xrdp 
       state: running
       enabled: yes
+   
+  - name: Create source directory
+    file: path=/source
 
 # Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
   - name: download the dotnet bits
-    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835019
+    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835019 https://go.microsoft.com/fwlink/?linkid=843420
     args:
       chdir: /source
     ignore_errors: yes
