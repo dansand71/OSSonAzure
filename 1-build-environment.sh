@@ -194,8 +194,6 @@ cd /source
 echo ""
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
-sudo echo "export ANSIBLE_HOST_KEY_CHECKING=false" >> ~/.bashrc
-export ANSIBLE_HOST_KEY_CHECKING=false
 #BUGBUGBUG on MAC - error you get: too long for Unix domain socket
 #To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r - DIDNT WORK on 3-15
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
@@ -228,6 +226,10 @@ scp /source/OSSonAzure/DemoEnvironmentTemplateValues GBBOSSDemo@jumpbox-${server
 
 echo ""
 echo "Launch Microsoft or MAC RDP via --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
+echo "   or leverage the RDP file created in /source/JUMPBOX-SERVER.rdp"
+sudo sed -i -e "s@JUMPBOX-SERVER-NAME@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp
+sudo cp /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp /source/OSSonAzure/JUMPBOX-SERVER.rdp
 echo "SSH is available via: ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "
-echo "Demos on the jumpbox server will be found under \source\OSSonAzure"
+echo ""
+echo "Enjoy and please report any issues in the GitHub issues page or email GBBOSS@Microsoft.com..."
 echo ""
