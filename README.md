@@ -19,12 +19,13 @@ To get started with this project:
 3. - mark the script as executable
 4. - run the environment script
 
-#H2 SCRIPT to Install
-⋅⋅⋅sudo mkdir /source⋅⋅
-⋅⋅⋅sudo git clone https://github.com/dansand71/OSSonAzure⋅⋅
-⋅⋅⋅sudo chmod +x /source/OSSonAzure/1-build-environment.sh⋅⋅
-⋅⋅⋅/source/OSSonAzure/1-build-environment.sh⋅⋅
-
+## SCRIPT to Install
+```
+sudo mkdir /source
+sudo git clone https://github.com/dansand71/OSSonAzure⋅⋅
+sudo chmod +x /source/OSSonAzure/1-build-environment.sh
+/source/OSSonAzure/1-build-environment.sh
+```
 
 The script installs / updates:
 - Updates YUM / APT-GET
