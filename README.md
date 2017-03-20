@@ -14,17 +14,17 @@ This particular project is comprised of a single shell script that has been test
 - RHEL 7
 
 To get started with this project:
-1 - create a directory off of your root /source
-2 - clone this project from git
-3 - mark the script as executable
-4 - run the environment script
+1. - create a directory off of your root /source
+2. - clone this project from git
+3. - mark the script as executable
+4. - run the environment script
 
-### SCRIPT
-sudo mkdir /source
-sudo git clone https://github.com/dansand71/OSSonAzure
-sudo chmod +x /source/OSSonAzure/1-build-environment.sh
-/source/OSSonAzure/1-build-environment.sh
-### SCRIPT
+#H2 SCRIPT to Install
+⋅⋅⋅sudo mkdir /source⋅⋅
+⋅⋅⋅sudo git clone https://github.com/dansand71/OSSonAzure⋅⋅
+⋅⋅⋅sudo chmod +x /source/OSSonAzure/1-build-environment.sh⋅⋅
+⋅⋅⋅/source/OSSonAzure/1-build-environment.sh⋅⋅
+
 
 The script installs / updates:
 - Updates YUM / APT-GET
