@@ -14,10 +14,10 @@ This particular project is comprised of a single shell script that has been test
 - RHEL 7
 
 To get started with this project:
-1. - create a directory off of your root /source
-2. - clone this project from git
-3. - mark the script as executable
-4. - run the environment script
+1. create a directory off of your root /source
+2. clone this project from git
+3. mark the script as executable
+4. run the environment script
 
 ## SCRIPT to Install
 ```
