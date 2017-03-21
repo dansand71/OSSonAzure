@@ -8,7 +8,7 @@ echo ""
 echo "Installation will require SU rights."
 echo ""
 echo "Installing git & ansible if they are missing."
-
+echo "Starting:"$(date)
 #Check DISTRO
 echo "Checking OS Distro"
 if [ -f /etc/redhat-release ]; then
@@ -49,7 +49,6 @@ if [ -f ~/bin/az ]
     curl -L https://aka.ms/InstallAzureCli | bash
     exec -l $SHELL
 fi
-clear
 echo ""
 echo "Logging in to Azure"
 #Checking to see if we are logged into Azure
@@ -110,6 +109,7 @@ if [[ $continuescript != "n" ]];then
 #BUILD RESOURCE GROUPS
 echo ""
 echo "BUILDING RESOURCE GROUPS"
+echo "Starting:"$(date)
 echo "--------------------------------------------"
 echo 'create utility resource group'
 ~/bin/az group create --name ossdemo-utility --location eastus
@@ -117,6 +117,7 @@ echo 'create utility resource group'
 #BUILD NETWORKS SECURTIY GROUPS and RULES
 echo ""
 echo "BUILDING NETWORKS SECURTIY GROUPS and RULES"
+echo "Starting:"$(date)
 echo "--------------------------------------------"
 echo 'Network Security Group for utility Resource Group'
 ~/bin/az network nsg create --resource-group ossdemo-utility --name NSG-ossdemo-utility --location eastus
@@ -143,6 +144,7 @@ if [[ $continuescript != "n" ]];then
 #BUILD STORAGE ACCOUNTS
 echo ""
 echo "BUILDING STORAGE ACCOUNTS"
+echo "Starting:"$(date)
 echo "--------------------------------------------"
 echo "Create Utility Storage account - you may need to change this in case there is a conflict"
 echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
@@ -179,6 +181,7 @@ sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
 echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
+echo "Starting:"$(date)
 echo "Reading ssh key information from local jumpbox_${serverPrefix}_id_rsa file"
 echo "--------------------------------------------"
 azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image OpenLogic:CentOS:7.2:latest --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS1_v2 --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
@@ -196,6 +199,7 @@ cd /source
 echo ""
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
+echo "Starting:"$(date)
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 cd /source/OSSonAzure/ansible
 echo ""
@@ -210,17 +214,20 @@ sudo sed -i -e "s@DEMO-STORAGE-ACCOUNT=@DEMO-STORAGE-ACCOUNT=${storagePrefix}sto
 
 #Set the remote jumpbox passwords
 echo "Resetting GBBOSSDemo and root passwords based on script values."
+echo "Starting:"$(date)
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "GBBOSSDemo:${jumpboxPassword}" | sudo chpasswd'
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'echo "root:${jumpboxPassword}" | sudo chpasswd'
 
 #Copy the SSH private & public keys up to the jumpbox server
 echo "Copying up the SSH Keys for demo purposes to the jumpbox ~/.ssh directories for GBBOSSDemo user."
+echo "Starting:"$(date)
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
 scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
 
 #mkdir for source on jumpbox server
 echo "Copying the template values file to the jumpbox server in /source directory."
+echo "Starting:"$(date)
 ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo mkdir /source'
 scp /source/OSSonAzure/DemoEnvironmentTemplateValues GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:/source/DemoEnvironmentTemplateValues
 
@@ -233,3 +240,4 @@ echo "SSH is available via: ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.clouda
 echo ""
 echo "Enjoy and please report any issues in the GitHub issues page or email GBBOSS@Microsoft.com..."
 echo ""
+echo "Finished:"$(date)
