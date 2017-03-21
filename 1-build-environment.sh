@@ -203,9 +203,9 @@ echo "Starting:"$(date)
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 cd /source/OSSonAzure/ansible
 echo ""
-ansiblecmd="-i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
-echo "Calling command: ansible-playbook "${ansiblecmd}
-ansible-playbook ${ansiblecmd}
+ansiblecommand=" -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+echo "Calling command: ansible-playbook ${ansiblecommand}"
+ansible-playbook ${ansiblecommand}
 echo ""
 echo "---------------------------------------------"
 echo "Configure demo template values file"
