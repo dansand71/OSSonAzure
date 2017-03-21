@@ -167,7 +167,7 @@ then
     # Replace the server with the right private key
     # BUG BUG - we need to actually replace the next three lines with new values
     # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=GBBOSSDemo@g" ~/.ssh/config
-    echo ""
+    echo "  We found an entry in ~/.ssh/config for this server - do not recreate."
 else
     # Add this to the config file
     echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=GBBOSSDemo" >> ~/.ssh/config
@@ -175,8 +175,6 @@ fi
 sudo chmod 600 ~/.ssh/config
 sudo chmod 600 ~/.ssh/jumpbox*
 sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
-
-
 
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
@@ -235,8 +233,8 @@ scp /source/OSSonAzure/DemoEnvironmentTemplateValues GBBOSSDemo@jumpbox-${server
 echo ""
 echo "Launch Microsoft or MAC RDP via --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
 echo "   or leverage the RDP file created in /source/JUMPBOX-SERVER.rdp"
-sudo sed -i -e "s@JUMPBOX-SERVER-NAME@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp
-sudo cp /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp /source/OSSonAzure/JUMPBOX-SERVER.rdp
+sudo sed -i -e "s@JUMPBOX-SERVER-NAME@jumpbox-${serverPrefix}@g" /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp
+sudo cp /source/OSSonAzure/vm-assets/JUMPBOX-SERVER.rdp /source/OSSDemo-jumpbox-server.rdp
 echo "SSH is available via: ssh GBBOSSDemo@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "
 echo ""
 echo "Enjoy and please report any issues in the GitHub issues page or email GBBOSS@Microsoft.com..."
