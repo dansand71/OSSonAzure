@@ -22,7 +22,7 @@ To get started with this project:
 ## SCRIPT to Install
 ```
 sudo mkdir /source
-sudo git clone https://github.com/dansand71/OSSonAzure⋅⋅
+sudo git clone https://github.com/dansand71/OSSonAzure
 sudo chmod +x /source/OSSonAzure/1-build-environment.sh
 /source/OSSonAzure/1-build-environment.sh
 ```

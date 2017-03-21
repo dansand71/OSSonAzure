@@ -90,31 +90,6 @@ read jumpboxPassword
 stty echo
 echo ""
 
-#Looking for jumpbox ssh key - if not found create one
-echo "We are copying in a new private key.  If we find an existing id_rsa we will make a copy and cleanup after."
-if [ -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa ]
-  then
-    echo "    Existing private key found.  Using this key ~/.ssh/jumpbox_${serverPrefix}_id_rsa for jumpbox creation"
-  else
-    echo "    Creating new key for ssh in ~/.ssh/ossdemo_id_rsa"
-    #Create key
-    ssh-keygen -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa -N ""
-    #Add this key to the ssh config file 
-fi
-if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
-then
-    # Replace the server with the right private key
-    # BUG BUG - we need to actually replace the next three lines with new values
-    # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=GBBOSSDemo@g" ~/.ssh/config
-    echo ""
-else
-    # Add this to the config file
-    echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=GBBOSSDemo" >> ~/.ssh/config
-fi
-sudo chmod 600 ~/.ssh/config
-sudo chmod 600 ~/.ssh/jumpbox*
-sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
-
 # Check the validity of the name (no dashes, spaces, less than 8 char, no special chars etc..)"
 # Can we set a Enviro variable so if you want to rerun it is here and set by default?
 echo "    Please enter your unique storage prefix: (Storage Account will become: 'PREFIX-storage'')"
@@ -174,6 +149,33 @@ echo "this is used in VM Create (Diagnostics storage) and Azure Registry"
 echo "calling ~/bin/az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS"
 ~/bin/az storage account create -l eastus -n ${storagePrefix}storage -g ossdemo-utility --sku Standard_LRS
 
+#Looking for jumpbox ssh key - if not found create one
+echo "We are creating a new VM with SSH enabled.  Looking for an existing key or creating a new one."
+if [ -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa ]
+  then
+    echo "    Existing private key found.  Using this key ~/.ssh/jumpbox_${serverPrefix}_id_rsa for jumpbox creation"
+  else
+    echo "    Creating new key for ssh in ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+    #Create key
+    ssh-keygen -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa -N ""
+    #Add this key to the ssh config file 
+fi
+if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
+then
+    # Replace the server with the right private key
+    # BUG BUG - we need to actually replace the next three lines with new values
+    # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=GBBOSSDemo@g" ~/.ssh/config
+    echo ""
+else
+    # Add this to the config file
+    echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=GBBOSSDemo" >> ~/.ssh/config
+fi
+sudo chmod 600 ~/.ssh/config
+sudo chmod 600 ~/.ssh/jumpbox*
+sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
+
+
+
 #CREATE UTILITY JUMPBOX SERVER
 echo ""
 echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
@@ -188,14 +190,12 @@ read -p "Please confirm the server is running in the Azure portal before continu
 
 #Download the GIT Repo for keys etc.
 echo "--------------------------------------------"
-echo "Downloading the Github repo for the connectivity keys and bits."
+echo "Ensuring we are in the /source directory for Ansible scripts."
 sudo mkdir /source
 cd /source
 echo ""
 echo "--------------------------------------------"
 echo "Configure jumpbox server with ansible"
-#BUGBUGBUG on MAC - error you get: too long for Unix domain socket
-#To solve this, in /etc/ansible/ansible.cfg file, enable the following. control_path = %(directory)s/%%h-%%r - DIDNT WORK on 3-15
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 cd /source/OSSonAzure/ansible
 echo ""
