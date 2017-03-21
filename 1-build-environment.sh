@@ -29,7 +29,7 @@ if [ -f /etc/lsb-release ]; then
    sudo apt-add-repository ppa:ansible/ansible -y
    sudo apt-get update -y
    sudo apt-get install ansible -y
-   sudo apt-get update && apt-get install -y libssl-dev libffi-dev python-dev
+   sudo apt-get update && sudo apt-get install -y libssl-dev libffi-dev python-dev
 fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "  OSType is:" ${OSTYPE}
@@ -203,8 +203,9 @@ echo "Starting:"$(date)
 sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com@g" /source/OSSonAzure/ansible/hosts
 cd /source/OSSonAzure/ansible
 echo ""
-echo "Calling command: ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
-ansible-playbook -i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa
+ansiblecmd = "-i /source/OSSonAzure/ansible/hosts /source/OSSonAzure/ansible/jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+echo "Calling command: ansible-playbook "${ansiblecmd}
+ansible-playbook ${ansiblecmd}
 echo ""
 echo "---------------------------------------------"
 echo "Configure demo template values file"
