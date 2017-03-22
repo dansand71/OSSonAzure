@@ -15,6 +15,8 @@ if [ -f /etc/redhat-release ]; then
   echo "    found RHEL or CENTOS - proceeding with YUM."
   sudo yum update -y
   sudo yum -y install git
+  sudo yum install gcc libffi-devel python-devel openssl-devel -y
+  
 fi
 if [ -f /etc/lsb-release ]; then
   echo "    Ubuntu - proceeding with APT."
@@ -29,7 +31,9 @@ if [ -f /etc/lsb-release ]; then
    sudo apt-add-repository ppa:ansible/ansible -y
    sudo apt-get update -y
    sudo apt-get install ansible -y
-   sudo apt-get update && sudo apt-get install -y libssl-dev libffi-dev python-dev
+   sudo apt-get install build-essential -y
+   sudo apt-get install libssl-dev libffi-dev python-dev -y
+      
 fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "  OSType is:" ${OSTYPE}
