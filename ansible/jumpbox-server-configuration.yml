@@ -72,7 +72,7 @@
       enabled: yes
    
   - name: Create source directory
-    file: path=/source
+    command: mkdir /source
 
 # Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
   - name: download the dotnet bits
