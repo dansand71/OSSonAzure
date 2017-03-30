@@ -14,8 +14,12 @@ echo "Checking OS Distro"
 if [ -f /etc/redhat-release ]; then
   echo "    found RHEL or CENTOS - proceeding with YUM."
   sudo yum update -y
+  yum install epel-release
+  yum install -y python-pip
   sudo yum -y install git
   sudo yum install gcc libffi-devel python-devel openssl-devel -y
+  sudo yum install ansible
+  
   
 fi
 if [ -f /etc/lsb-release ]; then
@@ -30,9 +34,9 @@ if [ -f /etc/lsb-release ]; then
    sudo apt-get install software-properties-common -y
    sudo apt-add-repository ppa:ansible/ansible -y
    sudo apt-get update -y
-   sudo apt-get install ansible -y
    sudo apt-get install build-essential -y
    sudo apt-get install libssl-dev libffi-dev python-dev -y
+   sudo apt-get install ansible -y
       
 fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -53,6 +57,8 @@ if [ -f ~/bin/az ]
     curl -L https://aka.ms/InstallAzureCli | bash
     exec -l $SHELL
 fi
+echo "Checking for Azure CLI upgrades"
+az component update
 echo ""
 echo "Logging in to Azure"
 #Checking to see if we are logged into Azure
