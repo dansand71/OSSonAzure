@@ -83,7 +83,7 @@ echo ""
 echo "Set values for creation of resource groups and jumpbox server"
 # Check the validity of the name (no dashes, spaces, less than 8 char, no special chars etc..)
 # Can we set a Enviro variable so if you want to rerun it is here and set by default?
-echo "    Please enter your unique server prefix: (Jumpbox server will become:'utility-PREFIX-jumpbox')"
+echo "    Please enter your unique server prefix: (Jumpbox server will become:'jumpbox-PREFIX')"
 echo "      Note - values should be lowercase and less than 8 characters.')" 
 read -p "Server Prefix:" serverPrefix
 # This requires a newer version of BASH not avialble in MAC OS - serverPrefix=${serverPrefix,,} 

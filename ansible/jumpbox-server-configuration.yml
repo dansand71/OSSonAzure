@@ -2,7 +2,7 @@
 # This playbook installs and configures all the items necessary for building out the demo's'
 - name: Install tools
   hosts: buildbox
-  remote_user: GBBOSSDemo
+  remote_user: gbbossdemo
   sudo : true 
 
   tasks: 
