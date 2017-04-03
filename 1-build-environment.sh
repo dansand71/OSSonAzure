@@ -126,7 +126,7 @@ echo 'create utility resource group'
 
 #BUILD NETWORKS SECURTIY GROUPS and RULES
 echo ""
-echo "BUILDING NETWORKS SECURTIY GROUPS and RULES"
+echo "BUILDING NETWORKS, SECURTIY GROUPS and RULES"
 echo "Starting:"$(date)
 echo "--------------------------------------------"
 echo 'Network Security Group for utility Resource Group'
@@ -146,6 +146,16 @@ echo 'Allow RDP inbound to Utility'
      --source-address-prefix Internet \
      --source-port-range "*" --destination-address-prefix "*" \
      --destination-port-range 22
+
+echo "----------------------------------"
+echo "Create VNET - az network vnet create -n 'ossdemo-utility-vnet' -g ossdemo-utility"
+        az network vnet create -n 'ossdemos-vnet' -g ossdemo-utility --address-prefix 192.168.0.0/16
+echo " Create Subnet: 192.168.0.0/24"
+echo "    running - az network vnet subnet create -g ossdemo-utility-iaas --vnet-name ossdemos-vnet -n ossdemo-utility-subnet --address-prefix 192.168.0.0/24 --network-security-group NSG-ossdemo-utility"
+        az network vnet subnet create -g ossdemo-utility --vnet-name ossdemos-vnet -n ossdemo-utility-subnet --address-prefix 192.168.0.0/24 --network-security-group NSG-ossdemo-utility
+echo "----------------------------------"
+
+
 fi
 echo ""
 read -p "Create storage accounts and jumpbox server? [y/n]:"  continuescript
@@ -192,7 +202,7 @@ echo "Creating CENTOS JUMPBOX utility machine for RDP and ssh"
 echo "Starting:"$(date)
 echo "Reading ssh key information from local jumpbox_${serverPrefix}_id_rsa file"
 echo "--------------------------------------------"
-azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image OpenLogic:CentOS:7.2:latest --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS2_v2 --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
+azcreatecommand="-g ossdemo-utility -n jumpbox-${serverPrefix} --public-ip-address-dns-name jumpbox-${serverPrefix} --os-disk-name jumpbox-${serverPrefix}-disk --image OpenLogic:CentOS:7.2:latest --nsg NSG-ossdemo-utility  --storage-sku Premium_LRS --size Standard_DS2_v2 --vnet-name ossdemos-vnet --subnet ossdemo-utility-subnet --admin-username GBBOSSDemo --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
 echo " Calling command: ~/bin/az vm create ${azcreatecommand}"
 ~/bin/az vm create ${azcreatecommand}
 fi
