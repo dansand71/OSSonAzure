@@ -76,7 +76,7 @@ if [ ${DEBUG} = "no" ]; then
     echo "..Checking if we are logged in to Azure."
     #We need to redirect the output streams to stdout
     azstatus=`~/bin/az group list 2>&1` 
-    if [[ $azstatus =~ "..Please run 'az login' to setup account." ]]; then
+    if [[ $azstatus =~ "Please run 'az login' to setup account." ]]; then
         echo "...We need to login to azure.."
         ~/bin/az login
     else
