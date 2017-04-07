@@ -2,7 +2,7 @@
 # This playbook installs and configures all the items necessary for building out the demo's'
 - name: Install tools
   hosts: buildbox
-  remote_user: gbbossdemo
+  remote_user: VALUEOF_DEMO_ADMIN_USER
   sudo : true 
 
   tasks: 
@@ -73,10 +73,11 @@
    
   - name: Create source directory
     command: mkdir /source
+    ignore_errors: yes
 
 # Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
   - name: download the dotnet bits
-    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835019 https://go.microsoft.com/fwlink/?linkid=843420
+    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?linkid=843449
     args:
       chdir: /source
     ignore_errors: yes
