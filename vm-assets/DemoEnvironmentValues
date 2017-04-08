@@ -1,0 +1,10 @@
+#Value of your jumpbox server name
+JUMPBOX_SERVER_NAME=jumpbox-gbboss71.eastus.cloudapp.azure.com
+DEMO_SERVER_PREFIX=gbboss71
+
+#Name of your demo account for storage
+DEMO_STORAGE_ACCOUNT=gbboss71storage
+DEMO_STORAGE_PREFIX=gbboss71
+
+#Value of your admin user name
+DEMO_ADMIN_USER=dansand

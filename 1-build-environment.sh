@@ -222,14 +222,6 @@ sudo sed -i -e "s@JUMPBOXSERVER-REPLACE.eastus.cloudapp.azure.com@jumpbox-${serv
 sudo sed -i -e "s@VALUEOF_DEMO_ADMIN_USER@${serverAdminName}@g" ${SOURCEDIR}/ansible/jumpbox-server-configuration.yml
 
 echo ""
-ansiblecommand=" -i hosts jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
-echo ".Calling command: ansible-playbook ${ansiblecommand}"
-#we need to run ansible-playbook in the same directory as the CFG file.  Go to that directory then back out...
-cd ${SOURCEDIR}/ansible
-    ansible-playbook ${ansiblecommand}
-cd ..
-
-echo ""
 echo "---------------------------------------------"
 echo "Configure demo template values file"
 echo ".current pwd:" $(pwd) " current location of script:"${SOURCEDIR}
@@ -267,6 +259,14 @@ echo "   or leverage the RDP file created in /source/JUMPBOX-SERVER.rdp"
 sudo cp ${SOURCEDIR}/vm-assets/JUMPBOX-SERVER.rdp ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
 sudo sed -i -e "s@VALUEOF_JUMPBOX_SERVER_NAME@jumpbox-${serverPrefix}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
 sudo sed -i -e "s@VALUEOF_DEMO_ADMIN_USER@${serverAdminName}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
+
+echo ""
+ansiblecommand=" -i hosts jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+echo ".Calling command: ansible-playbook ${ansiblecommand}"
+#we need to run ansible-playbook in the same directory as the CFG file.  Go to that directory then back out...
+cd ${SOURCEDIR}/ansible
+    ansible-playbook ${ansiblecommand}
+cd ..
 
 echo "SSH is available via: ssh ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "
 echo ""
