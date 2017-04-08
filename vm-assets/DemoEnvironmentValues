@@ -3,8 +3,8 @@ JUMPBOX_SERVER_NAME=jumpbox-dansand.eastus.cloudapp.azure.com
 DEMO_SERVER_PREFIX=dansand
 
 #Name of your demo account for storage
-DEMO_STORAGE_ACCOUNT=dansandstorage
-DEMO_STORAGE_PREFIX=dansand
+DEMO_STORAGE_ACCOUNT=storage
+DEMO_STORAGE_PREFIX=
 
 #Value of your admin user name
 DEMO_ADMIN_USER=dansand
