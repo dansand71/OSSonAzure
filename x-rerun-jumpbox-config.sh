@@ -27,6 +27,15 @@ read -p "$(echo -e -n "${INPUT}.Admin Name:${RESET}")" serverAdminName
 # This requires a newer version of BASH not avialble in MAC OS - serverPrefix=${serverPrefix,,} 
 serverAdminName=$(echo "${serverAdminName}" | tr '[:upper:]' '[:lower:]')
 
+# Check the validity of the name (no dashes, spaces, less than 8 char, no special chars etc..)"
+# Can we set a Enviro variable so if you want to rerun it is here and set by default?
+echo ".Please enter your unique storage prefix: (Storage Account will become: 'PREFIX-storage'')"
+echo "      (Note - values should be lowercase and less than 8 characters.)"
+read -p "$(echo -e -n "${INPUT}.Storage Prefix? (default: ${serverPrefix}demostorage):"${RESET})" storagePrefix
+[ -z "${storagePrefix}" ] && storagePrefix=${serverPrefix}
+# This requires a newer version of BASH not avialble in MAC OS - storagePrefix=${storagePrefix,,} 
+storagePrefix=$(echo "${storagePrefix}" | tr '[:upper:]' '[:lower:]')
+
 
 ### JUMPBOX SERVER PASSWORD
 while true
@@ -95,13 +104,6 @@ sudo cp ${SOURCEDIR}/vm-assets/JUMPBOX-SERVER.rdp ${SOURCEDIR}/OSSDemo-jumpbox-s
 sudo sed -i -e "s@VALUEOF_JUMPBOX_SERVER_NAME@jumpbox-${serverPrefix}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
 sudo sed -i -e "s@VALUEOF_DEMO_ADMIN_USER@${serverAdminName}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
 
-echo ""
-ansiblecommand=" -i hosts jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
-echo ".Calling command: ansible-playbook ${ansiblecommand}"
-#we need to run ansible-playbook in the same directory as the CFG file.  Go to that directory then back out...
-cd ${SOURCEDIR}/ansible
-    ansible-playbook ${ansiblecommand}
-cd ..
 
 echo "SSH is available via: ssh ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "
 echo ""
