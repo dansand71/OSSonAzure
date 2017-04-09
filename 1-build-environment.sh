@@ -20,7 +20,7 @@ echo "Installation will require SU rights."
 echo ""
 echo "Starting:"$(date)
 echo ".ensure we have rights on the directory to continue."
-sudo chmod -R 777 ${SOURCEDIR}/OSSonAzure
+sudo chmod -R 777 ${SOURCEDIR}
 if [ ${DEBUG} = "no" ]; then
     echo ".Checking OS Distro"
     if [ -f /etc/redhat-release ]; then
