@@ -191,6 +191,9 @@ if [[ $continuescript != "n" ]]; then
     sudo chmod 600 ~/.ssh/config
     sudo chmod 600 ~/.ssh/jumpbox*
     sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
+    
+    #Delete the host name in case it already exists
+    ssh-keygen -R "jumpbox-${serverPrefix}.eastus.cloudapp.azure.com"
 
     #CREATE UTILITY JUMPBOX SERVER
     echo ""
