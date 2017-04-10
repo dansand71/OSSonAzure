@@ -239,8 +239,8 @@ sudo sed -i -e "s@DEMO_ADMIN_USER=@DEMO_ADMIN_USER=${serverAdminName}@g" ${SOURC
 #Set the remote jumpbox passwords
 echo "Resetting ${serverAdminName} and root passwords based on script values."
 echo "Starting:"$(date)
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo "${serverAdminName}:${jumpboxPassword}" | sudo chpasswd"
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo "root:${jumpboxPassword}" | sudo chpasswd"
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo '${serverAdminName}:${jumpboxPassword}' | sudo chpasswd"
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo 'root:${jumpboxPassword}' | sudo chpasswd"
 
 #Copy the SSH private & public keys up to the jumpbox server
 echo "Copying up the SSH Keys for demo purposes to the jumpbox ~/.ssh directories for ${serverAdminName} user."
