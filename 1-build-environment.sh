@@ -113,6 +113,7 @@ serverAdminName=$(echo "${serverAdminName}" | tr '[:upper:]' '[:lower:]')
 while true
 do
   read -s -p "$(echo -e -n "${INPUT}.New Admin Password for Jumpbox:${RESET}")" jumpboxPassword
+  echo ""
   read -s -p "$(echo -e -n "${INPUT}.Re-enter to verify:${RESET}")" jumpboxPassword2
   
   if [ $jumpboxPassword = $jumpboxPassword2 ]
