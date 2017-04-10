@@ -142,7 +142,6 @@ echo -e "${BOLD}Creation of Resource Group...${RESET}"
 read -p "$(echo -e -n "${INPUT}Deploy Template to create resource group, and network rules? [Y/n]:"${RESET})" continuescript
 if [[ $continuescript != "n" ]]; then
     #Make a copy of the template file
-    sudo chmod -R 777 ${SOURCEDIR}/OSSonAzure/
     cp ${SOURCEDIR}/environment/ossdemo-utility-template.json ${SOURCEDIR}/environment/ossdemo-utility.json -f
     #MODIFY line in JSON TEMPLATES
     sudo sed -i -e "s@VALUEOF-UNIQUE-SERVER-PREFIX@${serverPrefix}@g" ${SOURCEDIR}/environment/ossdemo-utility.json
