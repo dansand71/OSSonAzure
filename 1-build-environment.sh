@@ -14,7 +14,7 @@ echo "Script is running from ${SOURCEDIR} Directory & will:"
 echo "- Install git"
 echo "- Install Azure CLI if not present"
 echo "- Log in to Azure and create a Resource Group 'ossdemo-utility' and CENTOS VM"
-echo "Script currently works against Ubuntu, Centos and RHEL however we are working through a bug with OSX regarding Ansible host length."
+echo "Script currently works against Ubuntu, Centos and RHEL."
 echo ""
 echo "Installation will require SU rights."
 echo ""
@@ -112,8 +112,8 @@ serverAdminName=$(echo "${serverAdminName}" | tr '[:upper:]' '[:lower:]')
 ### JUMPBOX SERVER PASSWORD
 while true
 do
-  read -p "$(echo -e -n "${INPUT}.New Admin Password for Jumpbox:${RESET}")" jumpboxPassword
-  read -p "$(echo -e -n "${INPUT}.Re-enter to verify:${RESET}")" jumpboxPassword2
+  read -p -s "$(echo -e -n "${INPUT}.New Admin Password for Jumpbox:${RESET}")" jumpboxPassword
+  read -p -s "$(echo -e -n "${INPUT}.Re-enter to verify:${RESET}")" jumpboxPassword2
   
   if [ $jumpboxPassword = $jumpboxPassword2 ]
   then
