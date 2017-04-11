@@ -21,11 +21,9 @@ To get started with this project:
 
 ## SCRIPT to Install
 ```
-sudo mkdir /source
-cd /source
 git clone https://github.com/dansand71/OSSonAzure
-sudo chmod +x /source/OSSonAzure/1-build-environment.sh
-/source/OSSonAzure/1-build-environment.sh
+sudo chmod +x ./OSSonAzure/1-build-environment.sh
+./OSSonAzure/1-build-environment.sh
 ```
 
 The script installs / updates:
