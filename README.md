@@ -26,6 +26,11 @@ sudo chmod +x ./OSSonAzure/1-build-environment.sh
 ./OSSonAzure/1-build-environment.sh
 ```
 
+## Deploy with Docker
+```:bash
+docker build -t ossdemo .
+```
+
 The script installs / updates:
 - Updates YUM / APT-GET
 - Installs git
