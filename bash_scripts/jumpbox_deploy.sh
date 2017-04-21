@@ -1,5 +1,31 @@
 #!/bin/bash
 
+SOURCEDIR=$(dirname $BASH_SOURCE)
+#Script Formatting
+RESET="\e[0m"
+INPUT="\e[7m"
+BOLD="\e[4m"
+YELLOW="\033[38;5;11m"
+RED="\033[0;31m"
+DEBUG="no"
+
+clear
+
+echo -e "${BOLD}Set values for creation of resource groups and jumpbox server${RESET}"
+# Check the validity of the name (no dashes, spaces, less than 8 char, no special chars etc..)
+# Can we set a Enviro variable so if you want to rerun it is here and set by default?
+echo ".Please enter your unique server prefix: (Jumpbox server will become:'jumpbox-PREFIX')"
+echo "     (Note - values should be lowercase and less than 8 characters.)"
+read -p "$(echo -e -n "${INPUT}.Server Prefix:${RESET}")" serverPrefix
+# This requires a newer version of BASH not avialble in MAC OS - serverPrefix=${serverPrefix,,} 
+serverPrefix=$(echo "${serverPrefix}" | tr '[:upper:]' '[:lower:]')
+
+echo ".Please enter your new admin username:"
+echo "     (Note - values should be lowercase and less than 8 characters.)" 
+read -p "$(echo -e -n "${INPUT}.Admin Name:${RESET}")" serverAdminName
+# This requires a newer version of BASH not avialble in MAC OS - serverPrefix=${serverPrefix,,} 
+serverAdminName=$(echo "${serverAdminName}" | tr '[:upper:]' '[:lower:]')
+
 ### JUMPBOX SERVER PASSWORD
 while true
 do
