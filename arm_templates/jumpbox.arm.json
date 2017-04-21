@@ -2,31 +2,45 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "registries_ossdemo_name": {
+        "jumpboxServerPrefix": {
             "defaultValue": "VALUEOF-UNIQUE-SERVER-PREFIX",
-            "type": "String"
+            "type": "string"
         },
-        "networkSecurityGroups_NSG_ossdemo_utility_name": {
-            "defaultValue": "NSG-ossdemo-utility",
-            "type": "String"
+        "jumpboxAdminName": {
+            "type": "string"
         },
-        "virtualNetworks_ossdemos_vnet_name": {
-            "defaultValue": "ossdemos-vnet",
-            "type": "String"
+        "jumpboxAdminPassword": {
+            "type": "secureString"
         },
-        "storageAccounts_svrprefix_storage_name": {
-            "defaultValue": "VALUEOF-UNIQUE-STORAGE-PREFIXdemostorage",
-            "type": "String"
+        "sshkey": {
+            "type": "secureString"
         }
     },
-    "variables": {},
+    "variables": {
+        "storageAccountName": "[concat(parameters('jumpboxServerPrefix'), 'storage')]",
+        "storageAccountType": "Premium_LRS",
+        "location": "[resourceGroup().location]",
+        "vnetName": "ossdemo-vnet",
+        "nsgName": "ossdemo-nsg",
+        "subnetName": "ossdemo-subnet",
+        "serverName": "[concat(parameters('jumpboxServerPrefix'),'-ossdemo')]"
+    },
     "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "[variables('storageAccountType')]"
+            }
+        },
         {
             "comments": "Generalized from Initial JSON Temmplate creation",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('networkSecurityGroups_NSG_ossdemo_utility_name')]",
+            "name": "[variables('nsgName')]",
             "apiVersion": "2016-03-30",
-            "location": "eastus",
+            "location": "[variables('location')]",
             "properties": {
                 "securityRules": [
                     {
@@ -62,9 +76,9 @@
         {
             "comments": "Generalized from Initial JSON Temmplate creation",
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('virtualNetworks_ossdemos_vnet_name')]",
+            "name": "[variables('vnetName')]",
             "apiVersion": "2016-03-30",
-            "location": "eastus",
+            "location": "[variables('location')]",
             "tags": {},
             "properties": {
                 "addressSpace": {
@@ -77,11 +91,11 @@
                 },
                 "subnets": [
                     {
-                        "name": "ossdemo-utility-subnet",
+                        "name": "[variables('subnetName')]",
                         "properties": {
                             "addressPrefix": "192.168.0.0/24",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_NSG_ossdemo_utility_name'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                             }
                         }
                     },
@@ -94,7 +108,7 @@
                 ]
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_NSG_ossdemo_utility_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ]
         },
         {
@@ -105,9 +119,9 @@
                 "tier": "Standard"
             },
             "kind": "Storage",
-            "name": "[parameters('storageAccounts_svrprefix_storage_name')]",
+            "name": "[parameters('storageAccounts_svrprefix_storageName')]",
             "apiVersion": "2016-01-01",
-            "location": "eastus",
+            "location": "[variables('location')]",
             "tags": {},
             "properties": {},
             "dependsOn": []

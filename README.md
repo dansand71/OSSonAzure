@@ -29,7 +29,7 @@ sudo chmod +x ./OSSonAzure/1-build-environment.sh
 ## Deploy with Docker
 ```:bash
 docker build -t ossdemo .
-docker run -it ossdemo
+docker run -it -v ~/.ssh:/home/kenobi/.ssh ossdemo 
 ```
 
 The script installs / updates:
