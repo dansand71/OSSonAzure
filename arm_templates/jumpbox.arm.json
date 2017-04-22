@@ -2,31 +2,57 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "jumpboxServerPrefix": {
+        "jumpboxServerName": {
             "defaultValue": "VALUEOF-UNIQUE-SERVER-PREFIX",
             "type": "string"
         },
         "jumpboxAdminName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "kenobi"
         },
         "jumpboxAdminPassword": {
             "type": "secureString"
         },
         "sshkey": {
             "type": "secureString"
+        },
+        "imagePublisher": {
+            "type": "string",
+            "defaultValue": "OpenLogic"
+        },
+        "imageOffer": {
+            "type": "string",
+            "defaultValue": "CentOS"
+        },
+        "OSVersion": {
+            "type": "string",
+            "defaultValue": "7.2"
         }
     },
     "variables": {
-        "storageAccountName": "[concat(parameters('jumpboxServerPrefix'), 'storage')]",
-        "storageAccountType": "Premium_LRS",
         "location": "[resourceGroup().location]",
-        "vnetName": "ossdemo-vnet",
+        
+        "storageAccountName": "[concat(parameters('jumpboxServerName'), 'storage', uniqueString(resourceGroup().id))]",
+        "storageAccountType": "Premium_LRS",
+        "vmStorageContainerName": "vms",
+        
         "nsgName": "ossdemo-nsg",
+        "vnetName": "ossdemo-vnet",
         "subnetName": "ossdemo-subnet",
-        "serverName": "[concat(parameters('jumpboxServerPrefix'),'-ossdemo')]"
+        "publicIPAddressName": "ossdemoPublicIP",
+        "publicIPAddressType": "Dynamic",
+        "dnsNameForPublicIP": "[parameters('jumpboxServerName')]",
+        "nicName": "ossdemo-nic",
+        
+        "serverName": "[concat(parameters('jumpboxServerName'),'ossdemo')]",
+        "vmsize": "Standard_DS2_v2",
+        "imagePublisher": "[parameters('imagePublisher')]",
+        "imageOffer": "[parameters('imageOffer')]",
+        "OSVersion": "[parameters('osVersion')]"
     },
     "resources": [
         {
+            "comments": "Storage Account Creation",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2016-01-01",
@@ -35,8 +61,9 @@
                 "accountType": "[variables('storageAccountType')]"
             }
         },
+        
         {
-            "comments": "Generalized from Initial JSON Temmplate creation",
+            "comments": "Network Security Group Creation",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[variables('nsgName')]",
             "apiVersion": "2016-03-30",
@@ -73,8 +100,9 @@
             },
             "dependsOn": []
         },
+
         {
-            "comments": "Generalized from Initial JSON Temmplate creation",
+            "comments": "Virtual Network Creation",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('vnetName')]",
             "apiVersion": "2016-03-30",
@@ -100,7 +128,7 @@
                         }
                     },
                     {
-                        "name": "ossdemo-appdev-iaas-subnet",
+                        "name": "[variables('subnetName')]",
                         "properties": {
                             "addressPrefix": "192.168.1.0/24"
                         }
@@ -111,20 +139,98 @@
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ]
         },
+
+
         {
-            "comments": "Generalized from Initial JSON Temmplate creation",
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "kind": "Storage",
-            "name": "[parameters('storageAccounts_svrprefix_storageName')]",
-            "apiVersion": "2016-01-01",
-            "location": "[variables('location')]",
-            "tags": {},
-            "properties": {},
-            "dependsOn": []
+            "comments": "Public IP Address creation",
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "dnsSettings": {
+                "domainNameLabel": "[variables('dnsNameForPublicIP')]"
+                }
+            }
+        },
+
+        {
+            "comments": "Network Interface Creation",
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('nicName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [{
+                    "name": "ipconfig1",
+                    "properties": {
+                        "privateIPAllocationMethod": "Dynamic",
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                        },
+                        "subnet": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('subnetName'))]"
+                        }
+                    }
+                }]
+            }
+        },
+
+        {
+            "apiVersion": "2015-08-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('serverName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('serverName')]",
+                    "adminUsername": "[parameters('jumpboxAdminName')]",
+                    "adminPassword": "[parameters('jumpboxAdminPassword')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": "false",
+                        "ssh": {
+                            "publicKeys": [{
+                                "keyData": "[parameters('sshkey')]"
+                            }]
+                        }
+                    }
+                },
+                "storageProfile": {
+                "imageReference": {
+                    "publisher": "[variables('imagePublisher')]",
+                    "offer": "[variables('imageOffer')]",
+                    "sku": "[variables('OSVersion')]",
+                    "version": "latest"
+                },
+                "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                    "uri": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageContainerName'),'/',parameters('jumpboxServerName'),'.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        }
+                    ]
+                }
+            }
         }
     ]
 }
