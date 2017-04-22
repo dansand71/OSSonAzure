@@ -28,7 +28,10 @@ ARM_PARAMETERS_FILE=$ARM_TEMPLATE_FOLDER"/"$ARM_PARAMETERS_FILENAME
 
 # create Azure Resource Group
 echo -e "Creating Resouce Group...\n"
-az group create --name ${AZ_RESOURCE_GROUP} --location ${AZ_LOCATION}
+az group create \
+    --name ${AZ_RESOURCE_GROUP} \
+    --location ${AZ_LOCATION}
+
 echo -e "Done.\n\n"
 
 # generate Azure Template Parameters
@@ -40,7 +43,11 @@ echo -e "Updating Parameters...\n"
 
 # deploy Azure Template
 echo -e "Deploying ARM Template...\n"
-az group deployment create --name test-ossdemo --resource-group ${AZ_RESOURCE_GROUP} --template-file ${ARM_TEMPLATE_FILE} > $JUMPBOX_OUTPUT_FILE
+az group deployment create \
+    --name test-ossdemo \
+    --resource-group ${AZ_RESOURCE_GROUP} \
+    --template-file ${ARM_TEMPLATE_FILE} > $JUMPBOX_OUTPUT_FILE
+
 echo -e "Jumpbox deployed."
 echo -e "Deployment output can be found in '${JUMPBOX_OUTPUT_FILE}'\n\n"
 
