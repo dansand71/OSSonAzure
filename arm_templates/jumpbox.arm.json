@@ -11,10 +11,10 @@
             "defaultValue": "kenobi"
         },
         "jumpboxAdminPassword": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "sshkey": {
-            "type": "secureString"
+            "type": "securestring"
         },
         "imagePublisher": {
             "type": "string",
@@ -57,6 +57,10 @@
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2016-01-01",
             "location": "[resourceGroup().location]",
+            "sku":{
+                "name":"Premium_LRS"
+            },
+            "kind": "BlobStorage",
             "properties": {
                 "accountType": "[variables('storageAccountType')]"
             }
@@ -182,7 +186,8 @@
         },
 
         {
-            "apiVersion": "2015-08-01",
+            "comments": "Virtual Machine Jumpbox Creation",
+            "apiVersion": "2015-06-15",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('serverName')]",
             "location": "[resourceGroup().location]",
@@ -199,7 +204,7 @@
                     "adminUsername": "[parameters('jumpboxAdminName')]",
                     "adminPassword": "[parameters('jumpboxAdminPassword')]",
                     "linuxConfiguration": {
-                        "disablePasswordAuthentication": "false",
+                        "disablePasswordAuthentication": false,
                         "ssh": {
                             "publicKeys": [{
                                 "keyData": "[parameters('sshkey')]"
