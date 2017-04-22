@@ -55,7 +55,7 @@
         "dnsNameForPublicIP": "[variables('serverName')]",
         "nicName": "[concat(variables('serverName'), '-nic')]",
         
-        "serverName": "[variables('prefix'), concat(parameters('jumpboxServerName'))]",
+        "serverName": "[concat(variables('prefix'), parameters('jumpboxServerName'))]",
         "vmsize": "[parameters('vmSize')]",
         "imagePublisher": "[parameters('imagePublisher')]",
         "imageOffer": "[parameters('imageOffer')]",
