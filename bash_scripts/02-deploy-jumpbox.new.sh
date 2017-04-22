@@ -1,5 +1,6 @@
 
 SOURCEDIR=$(dirname $BASH_SOURCE)
+
 #Script Formatting
 RESET="\e[0m"
 INPUT="\e[7m"
@@ -26,6 +27,8 @@ ARM_PARAMETERS_FILENAME="jumpbox.parameters.json"
 ARM_TEMPLATE_FILE=$ARM_TEMPLATE_FOLDER"/"$ARM_TEMPLATE_FILENAME
 ARM_PARAMETERS_FILE=$ARM_TEMPLATE_FOLDER"/"$ARM_PARAMETERS_FILENAME
 
+
+
 # create Azure Resource Group
 echo -e "Creating Resouce Group...\n"
 az group create \
@@ -33,6 +36,8 @@ az group create \
     --location ${AZ_LOCATION}
 
 echo -e "Done.\n\n"
+
+
 
 # generate Azure Template Parameters
 cp ${ARM_TEMPLATE_FOLDER}jumpbox.parameters.json.example ${ARM_PARAMETERS_FILE}
@@ -50,6 +55,8 @@ az group deployment create \
 
 echo -e "Jumpbox deployed."
 echo -e "Deployment output can be found in '${JUMPBOX_OUTPUT_FILE}'\n\n"
+
+
 
 # output new server FQDN
 JUMPBOX_FQDN=$(cat jumpbox.deployment.output.json | jq -r '.properties.outputs.dnsName.value')
