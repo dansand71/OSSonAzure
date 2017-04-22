@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "jumpboxServerName": {
-            "defaultValue": "ossdemo",
+            "defaultValue": "jumpbox",
             "type": "string"
         },
         "jumpboxAdminName": {
@@ -11,10 +11,12 @@
             "defaultValue": "kenobi"
         },
         "jumpboxAdminPassword": {
-            "type": "securestring"
+            "type": "string",
+            "defaultValue": "J3d1m@ster"
         },
         "sshkey": {
-            "type": "securestring"
+            "type": "string",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDK0xiALjnkKBfTGP56OWTglacvLU3Qpq0kYZFWvQrBDBMZ1pBk/EeTGCzBlqneQ6+yikmJ9dRM0gAEc4Q2GC5cjaxfqIstB0QZlK36tWYXUr84lXIR90njCLEi+Y2SIpERVP9EcYwaFZ8EX7a+vqW/LVwcCnVDDPVIdMMIetGst1jVnTTEBjDcl7DTDICZuU3DbmZ+WpDKjbvBJNRDhkHsRyThbLscn6mwSOfklXlT9CtFK5ShlYXMNiH8G+wJgHZmJU8EQjOklywRQZ0EPdp0SDer13fW8Wj9RiUb1V4pJCTKZSs1qdLn3BrwdC/V97biNYb3Zi/WIk45t0YwUG42JpSbCh2mAUzKh+fKmvxcF0sxcoietJyRcHzhi6x/9e8Q2ErRDnOPg4kSsDrMdrPrISadpgoF2TdVKpKXFEWEGPig4z29kzYYCC0/gahAklF0MgAOxFEn/AKvaGyNSzD4n5AFuDYb01AhfZVJCc/zfYJPaV10IzHgrjIPtJH46zCU+TANEz0EPXVJxmcMq+pnxJ7X2k7nNLdJOn4Fy0H2UV9rX1CBcV4Qv8O6HBVHW6Mhz3VzRloQa4O0qMdFmmSc+CtzFPPPa0iJxYzSYA5mw1kiJRnRDVMgVdiDwwlQDgcZ2DT5Oc8R1o47fBFvFk6LfzMooc0ZRjEPw0jH8YbzSw== ray@peopleandcode.com"
         },
         "vmSize": {
             "type": "string",
@@ -34,38 +36,42 @@
         }
     },
     "variables": {
+        "prefix": "ossdemo-",
+        "suffix": "ossdemo",
+
         "location": "[resourceGroup().location]",
         
         "storageAccountName": "[take(concat(parameters('jumpboxServerName'), 'storage', uniqueString(resourceGroup().id)), 24)]",
         "storageAccountType": "Premium_LRS",
-        "storageType": "BlobStorage",
         "vmStorageContainerName": "vms",
         
-        "nsgName": "ossdemo-nsg",
-        "vnetName": "ossdemo-vnet",
-        "subnetName": "ossdemo-subnet",
+        "nsgName": "[concat(variables('prefix'), 'nsg')]",
+        "vnetName": "[concat(variables('prefix'), 'vnet')]",
+        "vnetRef":  "[resourceId('Microsoft.Network/virtualNetworks',variables('vnetName'))]",
+        "subnetName": "[concat(variables('prefix'), 'subnet')]",
+        "subnetRef": "[concat(variables('vnetRef'),'/subnets/',variables('subnetName'))]",
         "publicIPAddressName": "ossdemoPublicIP",
         "publicIPAddressType": "Dynamic",
-        "dnsNameForPublicIP": "[parameters('jumpboxServerName')]",
-        "nicName": "ossdemo-nic",
+        "dnsNameForPublicIP": "[variables('serverName')]",
+        "nicName": "[concat(variables('prefix'), 'nic')]",
         
-        "serverName": "[concat(parameters('jumpboxServerName'),'ossdemo')]",
+        "serverName": "[concat(parameters('jumpboxServerName'),variables('suffix'))]",
         "vmsize": "[parameters('vmSize')]",
         "imagePublisher": "[parameters('imagePublisher')]",
         "imageOffer": "[parameters('imageOffer')]",
-        "OSVersion": "[parameters('osVersion')]"
+        "OSVersion": "[parameters('osVersion')]",
+        "sshKeyPath": "[concat('/home/',parameters('jumpboxAdminName'),'/.ssh/authorized_keys')]"
     },
     "resources": [
         {
             "comments": "Storage Account Creation",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
-            "apiVersion": "2016-01-01",
+            "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
-            "sku":{
-                "name": "[variables('storageAccountType')]"
-            },
-            "kind": "[variables('storageType')]"
+            "properties":{
+                "accountType": "[variables('storageAccountType')]"
+            }
         },
         
         {
@@ -132,12 +138,6 @@
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                             }
                         }
-                    },
-                    {
-                        "name": "[variables('subnetName')]",
-                        "properties": {
-                            "addressPrefix": "192.168.1.0/24"
-                        }
                     }
                 ]
             },
@@ -180,7 +180,7 @@
                             "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
                         },
                         "subnet": {
-                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('subnetName'))]"
+                            "id": "[variables('subnetRef')]"
                         }
                     }
                 }]
@@ -209,6 +209,7 @@
                         "disablePasswordAuthentication": false,
                         "ssh": {
                             "publicKeys": [{
+                                "path": "[variables('sshKeyPath')]",
                                 "keyData": "[parameters('sshkey')]"
                             }]
                         }
@@ -239,5 +240,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "dnsName": {
+            "type": "string",
+            "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+        }
+    }
 }
