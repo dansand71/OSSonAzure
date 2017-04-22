@@ -36,26 +36,26 @@
         }
     },
     "variables": {
-        "prefix": "ossdemo-",
-        "suffix": "ossdemo",
+        "prefix": "ossdemo",
 
         "location": "[resourceGroup().location]",
         
-        "storageAccountName": "[take(concat(parameters('jumpboxServerName'), 'storage', uniqueString(resourceGroup().id)), 24)]",
+        "storageAccountName": "[take(concat(variables('prefix'), 'storage', uniqueString(resourceGroup().id)), 24)]",
         "storageAccountType": "Premium_LRS",
         "vmStorageContainerName": "vms",
         
-        "nsgName": "[concat(variables('prefix'), 'nsg')]",
-        "vnetName": "[concat(variables('prefix'), 'vnet')]",
+        "nsgName": "[concat(variables('prefix'), '-nsg')]",
+        "vnetName": "[concat(variables('prefix'), '-vnet')]",
         "vnetRef":  "[resourceId('Microsoft.Network/virtualNetworks',variables('vnetName'))]",
         "subnetName": "[concat(variables('prefix'), 'subnet')]",
         "subnetRef": "[concat(variables('vnetRef'),'/subnets/',variables('subnetName'))]",
-        "publicIPAddressName": "ossdemoPublicIP",
+        "ipConfigName": "[concat(variables('serverName'), '-ipconfig')]",
+        "publicIPAddressName": "[concat(variables('serverName'), '-publicIPAddressName')]",
         "publicIPAddressType": "Dynamic",
         "dnsNameForPublicIP": "[variables('serverName')]",
-        "nicName": "[concat(variables('prefix'), 'nic')]",
+        "nicName": "[concat(variables('serverName'), '-nic')]",
         
-        "serverName": "[concat(parameters('jumpboxServerName'),variables('suffix'))]",
+        "serverName": "[variables('prefix'), concat(parameters('jumpboxServerName'))]",
         "vmsize": "[parameters('vmSize')]",
         "imagePublisher": "[parameters('imagePublisher')]",
         "imageOffer": "[parameters('imageOffer')]",
@@ -173,7 +173,7 @@
             ],
             "properties": {
                 "ipConfigurations": [{
-                    "name": "ipconfig1",
+                    "name": "[variables('ipConfigName')]",
                     "properties": {
                         "privateIPAllocationMethod": "Dynamic",
                         "publicIPAddress": {
@@ -216,20 +216,20 @@
                     }
                 },
                 "storageProfile": {
-                "imageReference": {
-                    "publisher": "[variables('imagePublisher')]",
-                    "offer": "[variables('imageOffer')]",
-                    "sku": "[variables('OSVersion')]",
-                    "version": "latest"
-                },
-                "osDisk": {
-                    "name": "osdisk",
-                    "vhd": {
-                    "uri": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageContainerName'),'/',parameters('jumpboxServerName'),'.vhd')]"
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[variables('OSVersion')]",
+                        "version": "latest"
                     },
-                    "caching": "ReadWrite",
-                    "createOption": "FromImage"
-                }
+                    "osDisk": {
+                        "name": "osdisk",
+                        "vhd": {
+                        "uri": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageContainerName'),'/',parameters('jumpboxServerName'),'.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
