@@ -101,8 +101,8 @@
             "comments": "Generalized from Initial JSON Temmplate creation",
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
+                "name": "Premium_LRS",
+                "tier": "Premium"
             },
             "kind": "Storage",
             "name": "[parameters('storageAccounts_svrprefix_storage_name')]",

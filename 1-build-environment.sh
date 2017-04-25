@@ -70,7 +70,7 @@ if [ ${DEBUG} = "no" ]; then
         exec -l $SHELL
     fi
     echo ".Checking for Azure CLI upgrades"
-    az component update
+    #az component update - this broke on 4/25 with new cli bits
     echo ""
     echo ".Logging in to Azure"
     #Checking to see if we are logged into Azure
