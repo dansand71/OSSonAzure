@@ -8,25 +8,25 @@ az account show 1> /dev/null
 
 if [ $? != 0 ];
 then
-	az login > accounts.json
+	az login > az_subscriptions.json
 else
-    az account list > accounts.json
+    az account list > az_subscriptions.json
 fi
 ## END ##
 
 
 # Change Subscription?
-echo -e "Current subscription is: " $(jq -r ".[] | select(.isDefault) | .name" accounts.json) ":" $(jq ".[] | select(.isDefault) | .id" accounts.json) "\n"
+echo -e "Current subscription is: " $(jq -r ".[] | select(.isDefault) | .name" az_subscriptions.json) ":" $(jq ".[] | select(.isDefault) | .id" az_subscriptions.json) "\n"
 read -p "Change to a different subscription? (y/N)" promptChangeSubscription
 promptChangeSubscription=$(echo "${promptChangeSubscription}" | tr '[:upper:]' '[:lower:]')
 
 if [[$promptChangeSubscription = "y"]]; 
 then
-    subscriptionLength=$(jq 'length' accounts.json)
+    subscriptionLength=$(jq 'length' az_subscriptions.json)
     
     for ((subscriptionIndex=0; subscriptionIndex<subscriptionLength; subscriptionIndex++))
     do
-        echo "$(expr $subscriptionIndex + 1)."  $(jq -r ".[${subscriptionIndex}] | .name + \" (\" + .id + \")\"" accounts.json)
+        echo "$(expr $subscriptionIndex + 1)."  $(jq -r ".[${subscriptionIndex}] | .name + \" (\" + .id + \")\"" az_subscriptions.json)
     done
 
     read -p "Choose subscription (1 - $subscriptionLength): " subscriptionChoice
@@ -67,17 +67,17 @@ if [[ $useOrCreateResourceGroup = 'n' ]];
 then
     echo -e "Select another Resource Group to use:"
 
-    az group list > resourceGroupList.json
-    resourceGroupLength=$(jq 'length' resourceGroupList.json)
+    az group list > az_resourceGroups.json
+    resourceGroupLength=$(jq 'length' az_resourceGroups.json)
     
     for ((resourceGroupIndex=0; resourceGroupIndex<resourceGroupLength; resourceGroupIndex++))
     do
-        echo "$(expr $resourceGroupIndex + 1)."  $(jq -r ".[${resourceGroupIndex}] | .name" resourceGroupList.json)
+        echo "$(expr $resourceGroupIndex + 1)."  $(jq -r ".[${resourceGroupIndex}] | .name" az_resourceGroups.json)
     done
 
     read -p "Choose Resource Group (1 - $resourceGroupLength): " resourceGroupChoice
     resourceGroupChoice=$(expr $resourceGroupChoice - 1)
-    AZ_RESOURCE_GROUP_NAME=$(jq -r ".[$resourceGroupChoice] | .name" resourceGroupList.json)
+    AZ_RESOURCE_GROUP_NAME=$(jq -r ".[$resourceGroupChoice] | .name" az_resourceGroups.json)
 fi
 
 echo -e "Now using Resource Group: $AZ_RESOURCE_GROUP_NAME"

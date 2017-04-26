@@ -1,5 +1,4 @@
 jumpbox.deployment.output.json
 arm_templates/jumpbox.parameters.json
-accounts.json
-subscriptionsList.json
+az_subscriptions.json
 resourceGroupList.json
