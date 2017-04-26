@@ -9,6 +9,30 @@ az account show 1> /dev/null
 if [ $? != 0 ];
 then
 	az login > accounts.json
+else
+    az account list > accounts.json
+fi
+
+
+## Change Subscription
+echo -e "Current subscription is: " $(jq -r ".[] | select(.isDefault) | .name" accounts.json) ":" $(jq ".[] | select(.isDefault) | .id" accounts.json) "\n"
+read -p "Change to a different subscription? (y/N)" promptChangeSubscription
+promptChangeSubscription=$(echo "${promptChangeSubscription}" | tr '[:upper:]' '[:lower:]')
+
+if [[$promptChangeSubscription = "y"]]; 
+then
+    subscriptionLength=$(jq 'length' accounts.json)
+    
+    for ((subscriptionIndex=0; subscriptionIndex<subscriptionLength; subscriptionIndex++))
+    do
+        echo "$(expr $subscriptionIndex + 1)."  $(jq -r ".[${subscriptionIndex}] | .name + \" (\" + .id + \")\"" accounts.json)
+    done
+
+    read -p "Choose subscription (1 - $subscriptionLength): " subscriptionChoice
+    subscriptionChoice=$(expr $subscriptionChoice - 1)
+    az account set --subscription $(jq -r ".[$subscriptionChoice] | .id")
+
+    echo -e "Subscription changed to: $(az account list | jq -r ".[] | select(.isDefault) | .name + \" (\" + .id + \")\" " )"
 fi
 
 # create Azure Resource Group
