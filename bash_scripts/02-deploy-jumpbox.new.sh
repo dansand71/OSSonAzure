@@ -83,11 +83,40 @@ fi
 echo -e "Now using Resource Group: $AZ_RESOURCE_GROUP_NAME"
 ## END ##
 
-# generate Azure Template Parameters
+## Deploy Template
+
+### Gather user input (work around for az command issues with user inputed parameters)
+# generate Azure Template Parameters File from example
 cp ${ARM_TEMPLATE_FOLDER}/jumpbox.parameters.json.example ${ARM_PARAMETERS_FILE}
 echo -e "Generated Parameters File for Jumpbox ARM Template\n\n"
 echo -e "Updating Parameters...\n"
 ## END ##
+
+### jumpboxServerName
+read -p "Jumpbox Server Name: " JUMPBOX_SERVER_NAME
+jq ".parameters.jumpboxServerName.value = \"$JUMPBOX_SERVER_NAME\" " $ARM_PARAMETERS_FILE.temp
+mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
+
+### jumpboxAdminName
+read -p "Jumpbox Server Admin Name: " JUMPBOX_ADMIN_NAME
+jq ".parameters.jumpboxAdminName.value = \"$JUMPBOX_ADMIN_NAME\" " $ARM_PARAMETERS_FILE.temp
+mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
+
+### jumpboxPassword
+read -p -s "Jumpbox Server Admin Password: " JUMPBOX_ADMIN_PASSWORD
+jq ".[] | .parameters.jumpboxAdminPassword.value = \"$JUMPBOX_ADMIN_PASSWORD\" " $ARM_PARAMETERS_FILE.temp
+mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
+
+### ssh-key
+### Auto Generate ssh-keys?
+read -p "Auto generate new ssh-keys? (Y/n):" autoGenerateSSHKeys
+autoGenerateSSHKeys=$(echo "${autoGenerateSSHKeys}" | tr '[:upper:]' '[:lower:]')
+
+## TODO: prompt and generate keys
+ssh_pub_key_location=~/.ssh/id_rsa.pub
+
+jq ".parameters.sshkey.value = \"$(cat ${ssh_pub_key_location})\" " $ARM_TEMPLATE_FILE.temp
+mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 # deploy Azure Template
 echo -e "Deploying ARM Template...\n"
