@@ -3,7 +3,6 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "jumpboxServerName": {
-            "defaultValue": "jumpbox",
             "type": "string"
         },
         "jumpboxAdminName": {
@@ -11,12 +10,10 @@
             "defaultValue": "kenobi"
         },
         "jumpboxAdminPassword": {
-            "type": "string",
-            "defaultValue": "J3d1m@ster"
+            "type": "securestring"
         },
         "sshkey": {
-            "type": "string",
-            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDK0xiALjnkKBfTGP56OWTglacvLU3Qpq0kYZFWvQrBDBMZ1pBk/EeTGCzBlqneQ6+yikmJ9dRM0gAEc4Q2GC5cjaxfqIstB0QZlK36tWYXUr84lXIR90njCLEi+Y2SIpERVP9EcYwaFZ8EX7a+vqW/LVwcCnVDDPVIdMMIetGst1jVnTTEBjDcl7DTDICZuU3DbmZ+WpDKjbvBJNRDhkHsRyThbLscn6mwSOfklXlT9CtFK5ShlYXMNiH8G+wJgHZmJU8EQjOklywRQZ0EPdp0SDer13fW8Wj9RiUb1V4pJCTKZSs1qdLn3BrwdC/V97biNYb3Zi/WIk45t0YwUG42JpSbCh2mAUzKh+fKmvxcF0sxcoietJyRcHzhi6x/9e8Q2ErRDnOPg4kSsDrMdrPrISadpgoF2TdVKpKXFEWEGPig4z29kzYYCC0/gahAklF0MgAOxFEn/AKvaGyNSzD4n5AFuDYb01AhfZVJCc/zfYJPaV10IzHgrjIPtJH46zCU+TANEz0EPXVJxmcMq+pnxJ7X2k7nNLdJOn4Fy0H2UV9rX1CBcV4Qv8O6HBVHW6Mhz3VzRloQa4O0qMdFmmSc+CtzFPPPa0iJxYzSYA5mw1kiJRnRDVMgVdiDwwlQDgcZ2DT5Oc8R1o47fBFvFk6LfzMooc0ZRjEPw0jH8YbzSw== ray@peopleandcode.com"
+            "type": "securestring"
         },
         "vmSize": {
             "type": "string",
