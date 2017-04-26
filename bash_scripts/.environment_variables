@@ -16,7 +16,7 @@ JUMPBOX_OUTPUT_FILE="jumpbox.deployment.output.json"
 JUMPBOX_FQDN=""
 
 # Azure deployment variables defaults
-AZ_RESOURCE_GROUP="ossdemo"
+AZ_RESOURCE_GROUP_NAME="ossdemo"
 AZ_LOCATION="eastus"
 
 # ARM template defaults

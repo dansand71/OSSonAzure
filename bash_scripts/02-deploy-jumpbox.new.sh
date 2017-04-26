@@ -20,7 +20,7 @@ echo -e "Current subscription is: " $(jq -r ".[] | select(.isDefault) | .name" a
 read -p "Change to a different subscription? (y/N)" promptChangeSubscription
 promptChangeSubscription=$(echo "${promptChangeSubscription}" | tr '[:upper:]' '[:lower:]')
 
-if [[$promptChangeSubscription = "y"]]; 
+if [ $promptChangeSubscription != "n" ]; 
 then
     subscriptionLength=$(jq 'length' az_subscriptions.json)
     
@@ -94,17 +94,18 @@ echo -e "Updating Parameters...\n"
 
 ### jumpboxServerName
 read -p "Jumpbox Server Name: " JUMPBOX_SERVER_NAME
-jq ".parameters.jumpboxServerName.value = \"$JUMPBOX_SERVER_NAME\" " $ARM_PARAMETERS_FILE.temp
+jq ".parameters.jumpboxServerName.value = \"$JUMPBOX_SERVER_NAME\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
 mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 ### jumpboxAdminName
 read -p "Jumpbox Server Admin Name: " JUMPBOX_ADMIN_NAME
-jq ".parameters.jumpboxAdminName.value = \"$JUMPBOX_ADMIN_NAME\" " $ARM_PARAMETERS_FILE.temp
+jq ".parameters.jumpboxAdminName.value = \"$JUMPBOX_ADMIN_NAME\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
 mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 ### jumpboxPassword
-read -p -s "Jumpbox Server Admin Password: " JUMPBOX_ADMIN_PASSWORD
-jq ".[] | .parameters.jumpboxAdminPassword.value = \"$JUMPBOX_ADMIN_PASSWORD\" " $ARM_PARAMETERS_FILE.temp
+read -s -p "Jumpbox Server Admin Password: " JUMPBOX_ADMIN_PASSWORD
+echo -e "\n"
+jq ".parameters.jumpboxAdminPassword.value = \"$JUMPBOX_ADMIN_PASSWORD\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
 mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 ### ssh-key
@@ -112,24 +113,24 @@ mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 read -p "Auto generate new ssh-keys? (Y/n):" autoGenerateSSHKeys
 autoGenerateSSHKeys=$(echo "${autoGenerateSSHKeys}" | tr '[:upper:]' '[:lower:]')
 
-## TODO: prompt and generate keys
-ssh_pub_key_location=~/.ssh/id_rsa.pub
+# ## TODO prompt and generate keys
+# ssh_pub_key_location=~/.ssh/id_rsa.pub
 
-jq ".parameters.sshkey.value = \"$(cat ${ssh_pub_key_location})\" " $ARM_TEMPLATE_FILE.temp
-mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
+# jq ".parameters.sshkey.value = \"$(cat ${ssh_pub_key_location})\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
+# mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
-# deploy Azure Template
-echo -e "Deploying ARM Template...\n"
-az group deployment create \
-    --name test-ossdemo \
-    --resource-group ${AZ_RESOURCE_GROUP} \
-    --template-file ${ARM_TEMPLATE_FILE}
-    --parameters-file ${ARM_PARAMETERS_FILE}
+# # deploy Azure Template
+# echo -e "Deploying ARM Template...\n"
+# az group deployment create \
+#     --name test-ossdemo \
+#     --resource-group ${AZ_RESOURCE_GROUP} \
+#     --template-file ${ARM_TEMPLATE_FILE}
+#     --parameters-file ${ARM_PARAMETERS_FILE}
 
-if [ $? = 0 ];
-then
-	echo -e "Jumpbox deployed."
-fi
+# if [ $? = 0 ];
+# then
+# 	echo -e "Jumpbox deployed."
+# fi
 ## END ##
 
 # echo -e "Deployment output can be found in '${JUMPBOX_OUTPUT_FILE}'\n\n"
