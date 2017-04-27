@@ -113,13 +113,13 @@ mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 echo -e "Generating Jumpbox SSH Key... \n"
 ssh_file_path=~/.ssh/
 ssh_private_key_filename="ossdemo_"$JUMPBOX_SERVER_NAME"_id_rsa"
-ssh_public_key_filename=$ssh_private_filename".pub"
-ssh_private_key_fullpath=$ssh_file_path$ssh_private_filename
+ssh_public_key_filename=$ssh_private_key_filename".pub"
+ssh_private_key_fullpath=$ssh_file_path$ssh_private_key_filename
 ssh_public_key_fullpath=$ssh_file_path$ssh_public_key_filename
 
 if [ -f ${ssh_private_key_fullpath} ];
 then
-    read -p "SSH Key '${ssh_file_name}' already exists.  Overwrite? (y/N)" overwriteSSHKEY
+    read -p "SSH Key '${ssh_private_key_fullpath}' already exists.  Overwrite? (y/N)" overwriteSSHKEY
     overwriteSSHKEY=$(echo "${overwriteSSHKEY}" | tr '[:upper:]' '[:lower:]')
 else
     overwriteSSHKEY="y"
