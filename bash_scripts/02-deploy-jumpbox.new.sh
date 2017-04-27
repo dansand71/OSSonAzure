@@ -110,14 +110,35 @@ mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 ### ssh-key
 ### Auto Generate ssh-keys?
-read -p "Auto generate new ssh-keys? (Y/n):" autoGenerateSSHKeys
-autoGenerateSSHKeys=$(echo "${autoGenerateSSHKeys}" | tr '[:upper:]' '[:lower:]')
+echo -e "Generating Jumpbox SSH Key... \n"
+ssh_file_path=~/.ssh/
+ssh_private_key_filename="ossdemo_"$JUMPBOX_SERVER_NAME"_id_rsa"
+ssh_public_key_filename=$ssh_private_filename".pub"
+ssh_private_key_fullpath=$ssh_file_path$ssh_private_filename
+ssh_public_key_fullpath=$ssh_file_path$ssh_public_key_filename
 
-# ## TODO prompt and generate keys
-# ssh_pub_key_location=~/.ssh/id_rsa.pub
+if [ -f ${ssh_private_key_fullpath} ];
+then
+    read -p "SSH Key '${ssh_file_name}' already exists.  Overwrite? (y/N)" overwriteSSHKEY
+    overwriteSSHKEY=$(echo "${overwriteSSHKEY}" | tr '[:upper:]' '[:lower:]')
+else
+    overwriteSSHKEY="y"
+fi
 
-# jq ".parameters.sshkey.value = \"$(cat ${ssh_pub_key_location})\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
-# mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
+if [ $overwriteSSHKEY = 'y' ];
+then
+    ssh-keygen -f ${ssh_private_key_fullpath} -N "" -q
+    echo "Generated SSH Keys (${ssh_private_key_fullpath})"
+fi
+
+## After the key is generated or if we are reusing an existing key...let's grab the public key value
+ssh_public_key_value=$(cat ${ssh_public_key_fullpath})
+
+## Let's put it into the ARM Parameters file
+### jumpboxPassword
+echo -e "Adding Public SSH-Key value into ARM Parameters File...\n"
+jq ".parameters.sshkey.value = \"$ssh_public_key_value\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
+mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
 # # deploy Azure Template
 # echo -e "Deploying ARM Template...\n"
