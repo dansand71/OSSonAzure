@@ -27,10 +27,20 @@ sudo chmod +x ./OSSonAzure/1-build-environment.sh
 ```
 
 ## Deploy with Docker
+
 ```:bash
+# Build the docker image locally
 docker build -t ossdemo .
-docker run -it -v ~/.ssh:/home/kenobi/.ssh ossdemo 
+
+# Run the new docker container
+docker run -it ossdemo 
+
+# Inside the docker container run the Jumpbox deploy script
+bash ./bash_scripts/02-deploy-jumpbox.new.sh
+
+# Profit
 ```
+
 
 The script installs / updates:
 - Updates YUM / APT-GET
