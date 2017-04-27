@@ -140,13 +140,13 @@ echo -e "Adding Public SSH-Key value into ARM Parameters File...\n"
 jq ".parameters.sshkey.value = \"$ssh_public_key_value\" " $ARM_PARAMETERS_FILE > $ARM_PARAMETERS_FILE.temp
 mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 
-# # deploy Azure Template
-# echo -e "Deploying ARM Template...\n"
-# az group deployment create \
-#     --name test-ossdemo \
-#     --resource-group ${AZ_RESOURCE_GROUP} \
-#     --template-file ${ARM_TEMPLATE_FILE}
-#     --parameters-file ${ARM_PARAMETERS_FILE}
+# deploy Azure Template
+echo -e "Deploying ARM Template...\n"
+az group deployment create \
+    --name test-ossdemo-deployment \
+    --resource-group ${AZ_RESOURCE_GROUP_NAME} \
+    --template-file ${ARM_TEMPLATE_FILE} \
+    --parameters @arm_templates/jumpbox.parameters.json
 
 # if [ $? = 0 ];
 # then

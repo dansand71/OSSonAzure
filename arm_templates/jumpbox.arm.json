@@ -6,8 +6,7 @@
             "type": "string"
         },
         "jumpboxAdminName": {
-            "type": "string",
-            "defaultValue": "kenobi"
+            "type": "string"
         },
         "jumpboxAdminPassword": {
             "type": "securestring"
