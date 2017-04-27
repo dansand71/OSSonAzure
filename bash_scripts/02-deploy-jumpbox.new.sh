@@ -143,10 +143,10 @@ mv $ARM_PARAMETERS_FILE.temp $ARM_PARAMETERS_FILE
 # deploy Azure Template
 echo -e "Deploying ARM Template...\n"
 az group deployment create \
-    --name test-ossdemo-deployment \
+    --name test-ossdemo \
     --resource-group ${AZ_RESOURCE_GROUP_NAME} \
     --template-file ${ARM_TEMPLATE_FILE} \
-    --parameters @arm_templates/jumpbox.parameters.json
+    --parameters @${ARM_PARAMETERS_FILE} > jumpbox.deployment.output.json
 
 # if [ $? = 0 ];
 # then
