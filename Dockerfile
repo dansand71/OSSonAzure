@@ -1,4 +1,4 @@
-FROM raykao/azure_lightsaber
+FROM raykao/azure_lightsaber:latest
 MAINTAINER Ray Kao <ray.kao@microsoft.com>
 
 USER kenobi
