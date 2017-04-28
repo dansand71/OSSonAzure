@@ -3,3 +3,4 @@ arm_templates/jumpbox.parameters.json
 az_subscriptions.json
 az_resourceGroups.json
 resourceGroupList.json
+ansible/hosts
