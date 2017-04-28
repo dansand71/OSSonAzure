@@ -162,6 +162,7 @@ then
     echo "Finished:"$(date)
 else 
     echo -e "Deployment error."
+    exit 1
 fi
 # END ##
 
