@@ -9,3 +9,5 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [buildbox]
+
+[jumpbox]
