@@ -50,7 +50,7 @@ fi
 
 useOrCreateResourceGroup=$(echo "${useOrCreateResourceGroup}" | tr '[:upper:]' '[:lower:]')
 
-if [[ $useOrCreateResourceGroup = 'y' &&  -z "$az_rg_exists" ]];
+if [[ $useOrCreateResourceGroup != 'n' &&  -z "$az_rg_exists" ]];
 then
     read -p "Please enter the Azure Region to deploy Resource Group to (default '$AZ_LOCATION)'):" AZ_LOCATION
     # create Azure Resource Group
@@ -60,7 +60,7 @@ then
         --name ${AZ_RESOURCE_GROUP_NAME} \
         --location ${AZ_LOCATION}
         
-    echo -e "Resource Group ${AZ_RESOURCE_GROUP_NAME} created in ${AZ_LOCATION}.\n\n"
+    echo -e "Resource Group '${AZ_RESOURCE_GROUP_NAME}' created in ${AZ_LOCATION}.\n\n"
 fi
 
 if [[ $useOrCreateResourceGroup = 'n' ]];
@@ -80,7 +80,7 @@ then
     AZ_RESOURCE_GROUP_NAME=$(jq -r ".[$resourceGroupChoice] | .name" az_resourceGroups.json)
 fi
 
-echo -e "Now using Resource Group: $AZ_RESOURCE_GROUP_NAME"
+echo -e "Now using Resource Group: $AZ_RESOURCE_GROUP_NAME \n"
 ## END ##
 
 ## Deploy Template
@@ -88,7 +88,7 @@ echo -e "Now using Resource Group: $AZ_RESOURCE_GROUP_NAME"
 ### Gather user input (work around for az command issues with user inputed parameters)
 # generate Azure Template Parameters File from example
 cp ${ARM_TEMPLATE_FOLDER}/jumpbox.parameters.json.example ${ARM_PARAMETERS_FILE}
-echo -e "Generated Parameters File for Jumpbox ARM Template\n\n"
+echo -e "Generated Parameters File for Jumpbox ARM Template"
 echo -e "Updating Parameters...\n"
 ## END ##
 
@@ -148,18 +148,20 @@ az group deployment create \
     --template-file ${ARM_TEMPLATE_FILE} \
     --parameters @${ARM_PARAMETERS_FILE} > jumpbox.deployment.output.json
 
-# if [ $? = 0 ];
-# then
-# 	echo -e "Jumpbox deployed."
-# fi
-## END ##
-
-# echo -e "Deployment output can be found in '${JUMPBOX_OUTPUT_FILE}'\n\n"
-
-
-
-# output new server FQDN
-# JUMPBOX_FQDN=$(cat jumpbox.deployment.output.json | jq -r '.properties.outputs.dnsName.value')
-# echo -e "Server can be reached at: $JUMPBOX_FQDN\n"
-# echo -e "ssh $JUMPBOX_ADMIN_NAME@$JUMPBOX_FQDN\n\n"
+if [ $? = 0 ];
+then
+    JUMPBOX_FQDN=$(cat jumpbox.deployment.output.json | jq -r '.properties.outputs.dnsName.value')
+	
+    echo -e "Jumpbox deployed."
+    echo -e "Deployment output can be found in '${JUMPBOX_OUTPUT_FILE}'\n\n"
+    echo -e "Server can be reached at: $JUMPBOX_FQDN\n"
+    echo "SSH is available via: ssh ${JUMPBOX_ADMIN_NAME}@ossdemo${JUMPBOX_SERVER_NAME}.${AZ_LOCATION}.cloudapp.azure.com -i ~/.ssh/ossdemo_${JUMPBOX_SERVER_NAME}_id_rsa "
+    echo ""
+    echo "Enjoy and please report any issues in the GitHub issues page or email GBBOSS@Microsoft.com..."
+    echo ""
+    echo "Finished:"$(date)
+else 
+    echo -e "Deployment error."
+fi
+# END ##
 
