@@ -169,4 +169,7 @@ fi
 
 ## Ansible
 
-
+### Prep ansible
+rm ansible/hosts
+echo "[jumpbox]" > ansible/hosts
+echo ${JUMPBOX_FQDN} >> ansible/hosts
