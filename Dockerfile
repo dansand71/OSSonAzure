@@ -3,5 +3,8 @@ MAINTAINER Ray Kao <ray.kao@microsoft.com>
 
 USER kenobi
 WORKDIR /home/kenobi
-ADD . OSSonAzure/
+COPY . OSSonAzure/
+USER root
+RUN chown -R kenobi:kenobi /home/kenobi/OSSonAzure
 WORKDIR /home/kenobi/OSSonAzure
+USER kenobi
