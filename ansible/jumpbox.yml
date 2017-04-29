@@ -2,7 +2,6 @@
 # This playbook installs and configures all the items necessary for building out the demo's'
 - name: Install tools
   hosts: jumpbox
-  remote_user: JUMPBOX_ADMIN_NAME
   sudo : true 
 
   tasks: 

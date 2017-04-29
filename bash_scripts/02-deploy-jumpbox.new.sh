@@ -170,15 +170,16 @@ fi
 ## Ansible
 
 ### Prep ansible
-rm ansible/hosts
-echo "[jumpbox]" > ansible/hosts
-echo ${JUMPBOX_FQDN} >> ansible/hosts
+rm $ANSIBLE_HOSTS_FILE
+echo "[jumpbox]" > $ANSIBLE_HOSTS_FILE
+echo ${JUMPBOX_FQDN} >> $ANSIBLE_HOSTS_FILE
 
 ### Add variables to ansible jumpbox group
 jq ".hosts |= .+ [\"${JUMPBOX_FQDN}\"]" \
     ./ansible/group_vars/example > ./ansible/group_vars/jumpbox.json
 
-jq ".vars.ansible_user = \"${JUMPBOX_ADMIN_NAME}\" \
-    | .vars.ansible_ssh_private_key_file = \"${ssh_private_key_fullpath}\"" \
+jq ".ansible_user = \"${JUMPBOX_ADMIN_NAME}\" \
+    | .ansible_ssh_private_key_file = \"${ssh_private_key_fullpath}\"" \
     ./ansible/host_vars/example > ./ansible/host_vars/${JUMPBOX_FQDN}.json
 
+ansible-playbook -i $ANSIBLE_HOSTS_FILE ansible/jumpbox.yml --extra-vars="ansible_sudo_pass=${JUMPBOX_ADMIN_PASSWORD}"

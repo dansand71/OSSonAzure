@@ -6,3 +6,4 @@ resourceGroupList.json
 ansible/hosts
 ansible/group_vars/*.json
 ansible/host_vars/*.json
+ansible/jumpbox.retry
