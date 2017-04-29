@@ -1,0 +1,9 @@
+jumpbox.deployment.output.json
+arm_templates/jumpbox.parameters.json
+az_subscriptions.json
+az_resourceGroups.json
+resourceGroupList.json
+ansible/hosts
+ansible/group_vars/*.json
+ansible/host_vars/*.json
+ansible/jumpbox.retry
