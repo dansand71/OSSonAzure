@@ -4,4 +4,5 @@ az_subscriptions.json
 az_resourceGroups.json
 resourceGroupList.json
 ansible/hosts
-ansible/group_vars/jumpbox.json.temp
+ansible/group_vars/*.json
+ansible/host_vars/*.json

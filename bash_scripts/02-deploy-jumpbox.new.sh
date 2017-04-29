@@ -175,10 +175,10 @@ echo "[jumpbox]" > ansible/hosts
 echo ${JUMPBOX_FQDN} >> ansible/hosts
 
 ### Add variables to ansible jumpbox group
-jq ".hosts |= .+ [\"${JUMPBOX_FQDN}\"] \
-    | .vars.ansible_user = \"${JUMPBOX_ADMIN_NAME}\" \
-    | .vars.ansible_ssh_private_key_file = \"${ssh_private_key_fullpath}\"" \
-    ./ansible/group_vars/jumpbox.json > ./ansible/group_vars/jumpbox.json.temp
+jq ".hosts |= .+ [\"${JUMPBOX_FQDN}\"]" \
+    ./ansible/group_vars/example > ./ansible/group_vars/jumpbox.json
 
-mv ./ansible/group_vars/jumpbox.json.temp ./ansible/group_vars/jumpbox.json
-rm ./ansible/group_vars/jumpbox.json.temp
+jq ".vars.ansible_user = \"${JUMPBOX_ADMIN_NAME}\" \
+    | .vars.ansible_ssh_private_key_file = \"${ssh_private_key_fullpath}\"" \
+    ./ansible/host_vars/example > ./ansible/host_vars/${JUMPBOX_FQDN}.json
+
