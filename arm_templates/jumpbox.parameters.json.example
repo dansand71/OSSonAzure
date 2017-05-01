@@ -1,0 +1,18 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+		"jumpboxServerName": {
+			"value": "JUMPBOX_SERVER_PREFIX_VALUE"
+		},
+    "jumpboxAdminName": {
+      "value": "JUMPBOX_ADMIN_USERNAME_VALUE"
+    },
+    "jumpboxAdminPassword": {
+      "value": "JUMPBOX_PASSWORD_VALUE"
+    },
+		"sshkey": {
+			"value": "SSH_KEY_VALUE"
+		}
+  }
+}

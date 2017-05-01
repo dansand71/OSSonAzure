@@ -1,0 +1,101 @@
+---
+# This playbook installs and configures all the items necessary for building out the demo's'
+- name: Install tools
+  hosts: jumpbox
+  sudo : true 
+
+  tasks: 
+  - name: update YUM
+    yum: name=* state=latest
+  
+  - name: Install epel
+    yum: name=epel-release state=latest
+
+  - name: Install python and pip
+    yum: name=python-pip state=latest
+  
+  - name: install Git
+    yum: name=git state=latest
+
+  - name: install Ansible
+    yum: name=ansible state=latest
+      
+# Install XRDP and TigerVNC - this is for RDP access and demo - http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-xrdp-on-centos-7-rhel-7.html
+  - name: install nux for demo purposes
+    command: rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
+    ignore_errors: yes
+  
+  - name: install XRDP for demo purposes
+    yum: name=xrdp state=latest
+  
+  - name: install TigerVNC for demo purposes
+    yum: name=tigervnc state=latest
+  
+  - name: Start xrdp
+    service: 
+      name: xrdp 
+      state: running
+      enabled: yes
+   
+# Install MS .NET Core - https://www.microsoft.com/net/core#linuxcentos
+  - name: download the dotnet bits
+    command: curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?linkid=843449
+    args:
+      chdir: /source
+    ignore_errors: yes
+  - name: install .net
+    command: mkdir -p /opt/dotnet
+    args:
+      chdir: /source
+    ignore_errors: yes
+  - name: config .net
+    command: tar zxf dotnet.tar.gz -C /opt/dotnet
+    args:
+      chdir: /source
+    ignore_errors: yes
+  - name: configure .net
+    command: ln -s /opt/dotnet/dotnet /usr/local/bin
+    ignore_errors: yes
+
+# Install MS Visual Studio Code - https://code.visualstudio.com/docs/setup/linux
+  - name: install vs code keys
+    command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  - name: config the vs repo
+    command: sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+  - name: update yum
+    command: yum -y update
+  - name: update the Yum cache
+    command: yum check-update
+  - name: install vs code for demo purposes
+    yum: name=code state=latest
+
+# Install the latest version of the Azure CLI - https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+# This doesnt work as the install script currently asks for paramters
+  - name: install pre-req for CLI
+    command: yum install -y gcc libffi-devel python-devel openssl-devel
+  #- name: Install the CLI of azure
+  #  command: curl -L https://aka.ms/InstallAzureCli | bash
+  #  args:
+  #    chdir: /source
+
+# Install additional tools
+  - name: install autoconf
+    yum: name=autoconf state=latest
+  - name: install automake
+    yum: name=automake state=latest
+  
+# Install .NET Publishing Tools
+  - name: install npm for .NET Publishing
+    yum: name=npm state=latest
+  - name: install bower
+    command: npm install bower -g
+  - name: install gulp
+    command: npm install gulp -g
+
+# Install developer tools
+  - name: Developer Tools
+    command: yum -y groupinstall "Development Tools"
+
+# Install desktop tools
+  - name: Gnome
+    command: yum -y groupinstall "GNOME Desktop" "Graphical Administration Tools"
