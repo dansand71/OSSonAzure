@@ -15,11 +15,11 @@ echo ""
 echo "Starting:"$(date)
 echo ""
 echo ".Logging in to Azure"
-~/bin/az login
+az login
 read -p "$(echo -e -n "${INPUT}..Change default subscription? [y/N]${RESET}")" changesubscription
 if [[ $changesubscription =~ "y" ]];then
    read -p "...New Subscription Name:" newsubscription
-   ~/bin/az account set --subscription "$newsubscription"
+   az account set --subscription "$newsubscription"
 else
    echo "..Using default existing subscription."
 fi
@@ -84,13 +84,13 @@ if [[ $continuescript != "n" ]]; then
     echo ".BUILDING RESOURCE GROUPS"
     echo "..Starting:"$(date)
     echo '..create utility resource group'
-    ~/bin/az group create --name ossdemo-utility --location eastus
+    az group create --name ossdemo-utility --location eastus
 
     #APPLY TEMPLATE
     echo ".APPLY JSON Template"
     echo "..Starting:"$(date)
     echo '..Applying Network Security Group for utility Resource Group'
-    ~/bin/az group deployment create --resource-group ossdemo-utility --name InitialDeployment --template-file ${SOURCEDIR}/environment/ossdemo-utility.json
+    az group deployment create --resource-group ossdemo-utility --name InitialDeployment --template-file ${SOURCEDIR}/environment/ossdemo-utility.json
 
 fi
 
@@ -141,9 +141,9 @@ if [[ $continuescript != "n" ]]; then
     --admin-username ${serverAdminName} \
     --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
 
-    echo "..Calling creation command: ~/bin/az vm create ${azcreatecommand}"
+    echo "..Calling creation command: az vm create ${azcreatecommand}"
     echo -e "${BOLD}...Creating Jumpbox server...${RESET}"
-    ~/bin/az vm create ${azcreatecommand}
+    az vm create ${azcreatecommand}
 fi
 echo ""
 echo "----------------------------------------------"
