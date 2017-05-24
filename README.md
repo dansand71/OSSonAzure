@@ -28,17 +28,9 @@ sudo chmod +x ./OSSonAzure/1-build-environment.sh
 
 ## Deploy with Docker
 
-```:bash
-# Build the docker image locally
-docker build -t ossdemo .
+```
+docker run -it -v /<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash “./OSSonAzure/fromdocker-build-environment.sh”
 
-# Run the new docker container
-docker run -it ossdemo 
-
-# Inside the docker container run the Jumpbox deploy script
-bash ./bash_scripts/02-deploy-jumpbox.new.sh
-
-# Profit
 ```
 
 
