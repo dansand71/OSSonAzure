@@ -96,29 +96,29 @@ read -p "$(echo -e -n "${INPUT}Create jumpbox server? [Y/n]:"${RESET})" continue
 if [[ $continuescript != "n" ]]; then
     #Looking for jumpbox ssh key - if not found create one
     echo ".We are creating a new VM with SSH enabled.  Looking for an existing key or creating a new one."
-    if [ -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa ]
+    if [ -f $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa ]
     then
-        echo "..Existing private key found.  Using this key ~/.ssh/jumpbox_${serverPrefix}_id_rsa for jumpbox creation"
+        echo "..Existing private key found.  Using this key $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa for jumpbox creation"
     else
-        echo "..Creating new key for ssh in ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+        echo "..Creating new key for ssh in $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa"
         #Create key
-        ssh-keygen -f ~/.ssh/jumpbox_${serverPrefix}_id_rsa -N "" -q
+        ssh-keygen -f $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa -N "" -q
         #Add this key to the ssh config file 
     fi
-    if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
+    if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" $HOME/clouddrive/.ssh/config
     then
         # Replace the server with the right private key
         # BUG BUG - we need to actually replace the next three lines with new values
-        # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa User=${serverAdminName}@g" ~/.ssh/config
-        echo "..We found an entry in ~/.ssh/config for this server - do not recreate."
+        # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=$HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa User=${serverAdminName}@g" $HOME/clouddrive/.ssh/config
+        echo "..We found an entry in $HOME/clouddrive/.ssh/config for this server - do not recreate."
     else
         # Add this to the config file
-        echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=~/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=${serverAdminName}" >> ~/.ssh/config
+        echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=$HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=${serverAdminName}" >> $HOME/clouddrive/.ssh/config
     fi
 
-    chmod 600 ~/.ssh/config
-    chmod 600 ~/.ssh/jumpbox*
-    sshpubkey=$(< ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
+    chmod 600 $HOME/clouddrive/.ssh/config
+    chmod 600 $HOME/clouddrive/.ssh/jumpbox*
+    sshpubkey=$(< $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
     
     #Delete the host name in case it already exists
     ssh-keygen -R "jumpbox-${serverPrefix}.eastus.cloudapp.azure.com"
@@ -135,7 +135,7 @@ if [[ $continuescript != "n" ]]; then
     --storage-sku Premium_LRS --size Standard_DS2_v2 \
     --vnet-name ossdemos-vnet --subnet ossdemo-utility-subnet \
     --admin-username ${serverAdminName} \
-    --ssh-key-value ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
+    --ssh-key-value $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa.pub "
 
     echo "..Calling creation command: az vm create ${azcreatecommand}"
     echo -e "${BOLD}...Creating Jumpbox server...${RESET}"
@@ -168,33 +168,36 @@ sed -i -e "s@DEMO_ADMIN_USER=@DEMO_ADMIN_USER=${serverAdminName}@g" ${SOURCEDIR}
 #Set the remote jumpbox passwords
 echo "Resetting ${serverAdminName} and root passwords based on script values."
 echo "Starting:"$(date)
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo '${serverAdminName}:${jumpboxPassword}' | sudo chpasswd"
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa "echo 'root:${jumpboxPassword}' | sudo chpasswd"
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa "echo '${serverAdminName}:${jumpboxPassword}' | sudo chpasswd"
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa "echo 'root:${jumpboxPassword}' | sudo chpasswd"
 
 #Copy the SSH private & public keys up to the jumpbox server
-echo "Copying up the SSH Keys for demo purposes to the jumpbox ~/.ssh directories for ${serverAdminName} user."
+echo "Copying up the SSH Keys for demo purposes to the jumpbox $HOME/clouddrive/.ssh directories for ${serverAdminName} user."
 echo "Starting:"$(date)
-scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
-scp ~/.ssh/jumpbox_${serverPrefix}_id_rsa.pub ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
+scp $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa
+scp $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa.pub ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:~/.ssh/id_rsa.pub
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 600 ~/.ssh/id_rsa'
 
 #mkdir for source on jumpbox server
 echo "Copying the template values file to the jumpbox server in /source directory."
 echo "Starting:"$(date)
 
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo mkdir /source'
-ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i ~/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 777 -R /source'
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo mkdir /source'
+ssh -t -o BatchMode=yes -o StrictHostKeyChecking=no ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com -i $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa 'sudo chmod 777 -R /source'
 scp ${SOURCEDIR}/vm-assets/DemoEnvironmentValues ${serverAdminName}@jumpbox-${serverPrefix}.eastus.cloudapp.azure.com:/source/DemoEnvironmentValues
 
 echo ""
 echo "Launch Microsoft or MAC RDP via --> mstsc and enter your jumpbox servername:jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" 
 echo "   or leverage the RDP file created in /source/JUMPBOX-SERVER.rdp"
-cp ${SOURCEDIR}/vm-assets/JUMPBOX-SERVER.rdp ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
-sed -i -e "s@VALUEOF_JUMPBOX_SERVER_NAME@jumpbox-${serverPrefix}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
-sed -i -e "s@VALUEOF_DEMO_ADMIN_USER@${serverAdminName}@g" ${SOURCEDIR}/OSSDemo-jumpbox-server.rdp
+cp ${SOURCEDIR}/vm-assets/JUMPBOX-SERVER.rdp $HOME/clouddrive/OSSDemo-jumpbox-server.rdp
+sed -i -e "s@VALUEOF_JUMPBOX_SERVER_NAME@jumpbox-${serverPrefix}@g" $HOME/clouddrive/OSSDemo-jumpbox-server.rdp
+sed -i -e "s@VALUEOF_DEMO_ADMIN_USER@${serverAdminName}@g" $HOME/clouddrive/OSSDemo-jumpbox-server.rdp
 
 echo ""
-ansiblecommand=" -i hosts jumpbox-server-configuration.yml --private-key ~/.ssh/jumpbox_${serverPrefix}_id_rsa"
+echo ""
+echo "You can access your SSH Keys within your cloud-shell-storage storage account --> FILES"
+echo ""
+ansiblecommand=" -i hosts jumpbox-server-configuration.yml --private-key $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa"
 echo ".Calling command: ansible-playbook ${ansiblecommand}"
 #we need to run ansible-playbook in the same directory as the CFG file.  Go to that directory then back out...
 cd ${SOURCEDIR}/ansible
