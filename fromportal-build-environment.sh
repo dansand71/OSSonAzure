@@ -1,4 +1,4 @@
-SOURCEDIR=$(dirname $BASH_SOURCE)
+SOURCEDIR="~/OSSonAzure"
 #Script Formatting
 RESET="\e[0m"
 INPUT="\e[7m"
