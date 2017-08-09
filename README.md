@@ -13,28 +13,44 @@ This particular project is comprised of a single shell script that has been test
 - Centos 7.3
 - RHEL 7
 
-To get started with this project:
-1. create a directory off of your root /source
-2. clone this project from git
-3. mark the script as executable
-4. run the environment script
+There are multiple ways to create the initial JUMPBOX on Azure:
+1. Azure CloudShell
+2. Local Docker Image
+3. Native install of tools and Azure CLI on your client
 
-## SCRIPT to Install
+## SCRIPT to Install via CloudShell
+1. Open the Cloud Shell from the Azure portal
+2. Paste the command below
+
+```
+git clone https://github.com/dansand71/OSSonAzure
+chmod +x ./OSSonAzure/fromportal-build-environment.sh
+./OSSonAzure/fromportal-build-environment.sh
+```
+
+## SCRIPT to Install via Local Docker
+1. Configure Hyper-V or Virtual Box as needed if you are on Windows 
+2. Install "Docker for Mac" or "Docker for Windows"
+3. Configure Disk Sharing so that the SSH keys can be persisted after container deletion
+4. If on Windows create a directory for your SSH Keys
+3. Paste the command below
+
+```
+#MAC_Example
+docker run -it -v /<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash './OSSonAzure/fromdocker-build-environment.sh'
+
+#WINDOWS_Example
+docker run -it -v c:/<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash './OSSonAzure/fromdocker-build-environment.sh'
+```
+
+## SCRIPT to Install via your LOCAL machine
 ```
 git clone https://github.com/dansand71/OSSonAzure
 sudo chmod +x ./OSSonAzure/1-build-environment.sh
 ./OSSonAzure/1-build-environment.sh
 ```
 
-## Deploy with Docker
-
-```
-docker run -it -v /<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash './OSSonAzure/fromdocker-build-environment.sh'
-
-```
-
-
-The script installs / updates:
+The local script installs / updates:
 - Updates YUM / APT-GET
 - Installs git
 - Installs Ansible
@@ -57,6 +73,3 @@ Once Jumpbox server (CENTOS 7.3) is created the ansible yml file:
 - installs pre-reqs for Azure CLI - libffi-devel, python-devel, openssl-devel
 - installs autoconf, automake, developer tools
 - installs GNOME - for demo purposes to show cross platform debugging
-
-
-
