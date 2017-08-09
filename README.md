@@ -29,7 +29,7 @@ sudo chmod +x ./OSSonAzure/1-build-environment.sh
 ## Deploy with Docker
 
 ```
-docker run -it -v /<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash “./OSSonAzure/fromdocker-build-environment.sh”
+docker run -it -v /<local directory for SSH files>:/root/.ssh dansand71/ossonazure bash './OSSonAzure/fromdocker-build-environment.sh'
 
 ```
 
