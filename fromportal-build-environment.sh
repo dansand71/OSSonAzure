@@ -1,4 +1,5 @@
-SOURCEDIR="~/OSSonAzure"
+#!/bin/bash
+SOURCEDIR=$HOME"/OSSonAzure"
 #Script Formatting
 RESET="\e[0m"
 INPUT="\e[7m"

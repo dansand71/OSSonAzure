@@ -1,3 +1,4 @@
+#!/bin/bash
 SOURCEDIR=$(dirname $BASH_SOURCE)
 #Script Formatting
 RESET="\e[0m"
