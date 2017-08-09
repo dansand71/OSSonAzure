@@ -101,6 +101,7 @@ if [[ $continuescript != "n" ]]; then
         echo "..Existing private key found.  Using this key $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa for jumpbox creation"
     else
         echo "..Creating new key for ssh in $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa"
+        mkdir $HOME/clouddrive/.ssh
         #Create key
         ssh-keygen -f $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa -N "" -q
         #Add this key to the ssh config file 
