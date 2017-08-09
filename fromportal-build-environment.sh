@@ -106,18 +106,18 @@ if [[ $continuescript != "n" ]]; then
         ssh-keygen -f $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa -N "" -q
         #Add this key to the ssh config file 
     fi
-    if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" $HOME/clouddrive/.ssh/config
+    if grep -Fxq "Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com" ~/.ssh/config
     then
         # Replace the server with the right private key
         # BUG BUG - we need to actually replace the next three lines with new values
         # sed -i "s@*Host jumpbox-${serverPrefix}.eastus.cloudapp.azure.com*@Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com IdentityFile=$HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa User=${serverAdminName}@g" $HOME/clouddrive/.ssh/config
-        echo "..We found an entry in $HOME/clouddrive/.ssh/config for this server - do not recreate."
+        echo "..We found an entry in ~/.ssh/config for this server - do not recreate."
     else
         # Add this to the config file
-        echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=$HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=${serverAdminName}" >> $HOME/clouddrive/.ssh/config
+        echo -e "Host=jumpbox-${serverPrefix}.eastus.cloudapp.azure.com\nIdentityFile=$HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa\nUser=${serverAdminName}" >> ~/.ssh/config
     fi
 
-    chmod 600 $HOME/clouddrive/.ssh/config
+    chmod 600 ~/.ssh/config
     chmod 600 $HOME/clouddrive/.ssh/jumpbox*
     sshpubkey=$(< $HOME/clouddrive/.ssh/jumpbox_${serverPrefix}_id_rsa.pub)
     
